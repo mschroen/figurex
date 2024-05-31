@@ -1,12 +1,14 @@
 # %%
 import os
 import io
+import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator, WeekdayLocator, HourLocator, MinuteLocator, DateFormatter
 
-import cartopy
-import cartopy.io.img_tiles as cimgt
+def load_cartopy_projection():
+    import cartopy
+    return(cartopy.crs.PlateCarree())
 
 class Figure:
     """
@@ -64,7 +66,7 @@ class Figure:
         self.transparent = transparent
         self.extent = extent
         if projection=='PlateCarree' or projection=='flat':
-            projection = cartopy.crs.PlateCarree()
+            projection = load_cartopy_projection()
         self.projection = projection
         self.tick_steps = tick_steps
         
@@ -205,6 +207,8 @@ def add_basemap(ax=None, extent=None, tiles='OSM', zoom=12, cache=False):
             ax.plot(x, y)
             add_basemap(ax, extent=[9, 11, 49, 51], tiles='OSM', zoom=12)
     """
+    import cartopy.io.img_tiles as cimgt
+
     if tiles == 'OSM' or tiles=='osm':
         request = cimgt.OSM(cache=cache)
     elif tiles == 'GoogleTiles-street' or tiles=='google':
