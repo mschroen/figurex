@@ -18,13 +18,13 @@ install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
 dependency_links = [x.strip().replace('git+', '') for x in all_reqs if x.startswith('git+')]
 
 setup(
-    name='figurenv',
+    name='figurex',
     version=__version__,
     description='A handy environment for plotting figures in python',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/mschroen/figurenv',
-    download_url='https://github.com/mschroen/figurenv/tarball/' + __version__,
+    url='https://github.com/mschroen/figurex',
+    download_url='https://github.com/mschroen/figurex/tarball/' + __version__,
     license='BSD',
     classifiers=[
       'Development Status :: 3 - Alpha',
@@ -32,10 +32,15 @@ setup(
       'Programming Language :: Python :: 3',
     ],
     keywords='',
-    packages=find_packages(exclude=['docs', 'tests*']),
+    packages=find_packages(
+        include=['figurex','figurex.*'],
+        exclude=['docs', 'tests*']),
     include_package_data=True,
     author='Martin Schrön',
     install_requires=install_requires,
     dependency_links=dependency_links,
+    extras_require={
+        'geo': ['cartopy']
+    },
     author_email='martin@schroen.eu'
 )
