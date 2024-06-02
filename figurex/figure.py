@@ -190,7 +190,10 @@ class Figure(Panel):
 
     def __enter__(self):
         # Create subplots with the given layout
-        self.ax = self.create_panel_grid()
+        if isinstance(self.layout, tuple):
+            self.ax = self.create_panel_grid()
+        elif isinstance(self.layout, list):
+            self.ax = self.create_panel_mosaic()
         
         # If it contains only one panel, behave like a Panel
         if Figure.is_panel:
@@ -233,6 +236,11 @@ class Figure(Panel):
             # gridspec_kw = self.gridspec_kw,
             subplot_kw = self.subplot_kw 
         )
+        # Return a flat list of axes 
+        if self.layout[0]==1 and self.layout[1]==1:
+            self.axes = [self.axes]
+        else:
+            self.axes = self.axes.flatten()
         return(self.axes)
 
 
@@ -245,6 +253,8 @@ class Figure(Panel):
             # gridspec_kw = self.gridspec_kw,
             subplot_kw = self.subplot_kw 
         )
+        # Convert labeled dict to list
+        self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
         return(self.axes)
     
     @staticmethod
