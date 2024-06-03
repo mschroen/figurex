@@ -3,6 +3,7 @@ import io
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.dates import YearLocator, MonthLocator, DayLocator, WeekdayLocator, HourLocator, MinuteLocator, DateFormatter
 
 
 class Panel:
@@ -19,6 +20,10 @@ class Panel:
         x_range = None,
         y_range = None,
         extent = None, # === bbox
+        x_major_ticks = None,
+        x_minor_ticks = None,
+        x_major_fmt = None,
+        x_minor_fmt = None,
     )
     panel_kw = default_panel_kw
 
@@ -33,6 +38,10 @@ class Panel:
         x_range: tuple = None,
         y_range: tuple = None,
         extent: list = None, # === bbox
+        x_major_ticks: str = None,
+        x_minor_ticks: str = None,
+        x_major_fmt: str = None,
+        x_minor_fmt: str =None,
     ):  
         # Set main properties
         self.title  = title
@@ -41,6 +50,10 @@ class Panel:
         self.x_range = x_range
         self.y_range = y_range
         self.extent = extent
+        self.x_major_ticks = x_major_ticks
+        self.x_minor_ticks = x_minor_ticks
+        self.x_major_fmt = x_major_fmt
+        self.x_minor_fmt = x_minor_fmt
 
         # Set properties from Panel kwarg (prio 1) or Figure kwarg (prio 2)
         if spines is None and "spines" in Panel.panel_kw:
@@ -53,6 +66,14 @@ class Panel:
             self.y_range = Panel.panel_kw["y_range"]
         if extent is None and "extent" in Panel.panel_kw:
             self.extent = Panel.panel_kw["extent"]
+        if x_major_ticks is None and "x_major_ticks" in Panel.panel_kw:
+            self.x_major_ticks = Panel.panel_kw["x_major_ticks"]
+        if x_minor_ticks is None and "x_minor_ticks" in Panel.panel_kw:
+            self.x_minor_ticks = Panel.panel_kw["x_minor_ticks"]
+        if x_major_fmt is None and "x_major_fmt" in Panel.panel_kw:
+            self.x_major_fmt = Panel.panel_kw["x_major_fmt"]
+        if x_minor_fmt is None and "grid" in Panel.panel_kw:
+            self.x_minor_fmt = Panel.panel_kw["x_minor_fmt"]
 
         
     def __enter__(self):
@@ -71,6 +92,10 @@ class Panel:
             self.set_grid(self.ax, self.grid)
         if self.extent or self.x_range or self.y_range:
             self.set_range(self.ax, self.extent, self.x_range, self.y_range)
+        if self.x_major_ticks:
+            self.set_time_ticks(self.ax, self.x_major_ticks, "major", fmt=self.x_major_fmt)
+        if self.x_minor_ticks:
+            self.set_time_ticks(self.ax, self.x_minor_ticks, "minor", fmt=self.x_minor_fmt)
 
 
     @staticmethod
@@ -186,6 +211,50 @@ class Panel:
             if isinstance(y_range, tuple):
                 ax.set_ylim(y_range[0], y_range[1])
 
+    @staticmethod
+    def set_time_ticks(
+        ax=None,
+        how: str = None,
+        which: str = "major",
+        fmt: str = None
+    ):
+        """
+        Format time axis.
+
+        Parameters
+        ----------
+        ax , optional
+            Axis to change, by default None
+        how : str, optional
+            Label every minutes, hours, days, weeks, months, or years, by default None
+        which : str, optional
+            Label major or minor ticks, by default "major"
+        fmt : str, optional
+            Format the date, e.g. "%b %d, %H_%M", by default None
+        """
+        if how:
+            if how=='minutes':
+                how = MinuteLocator()
+            if how=='hours':
+                how = HourLocator()
+            elif how=='days':
+                how = DayLocator()
+            elif how=='weeks':
+                how = WeekdayLocator()
+            elif how=='months':
+                how = MonthLocator()
+            elif how=='years':
+                how = YearLocator()
+
+            if which=='major':
+                ax.xaxis.set_major_locator(how)
+            elif which=='minor':
+                ax.xaxis.set_minor_locator(how)
+        if fmt:
+            if which=='major':
+                ax.xaxis.set_major_formatter(DateFormatter(fmt))
+            elif which=='minor':
+                ax.xaxis.set_minor_formatter(DateFormatter(fmt))
 class Figure(Panel):
     """
     Context manager for Figures.

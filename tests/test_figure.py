@@ -48,4 +48,27 @@ def test_Figure_extent():
         with Panel("b) Reality", extent=[4.9,5.1,3,7]) as ax:
             ax.plot([5,5],[6,4])
 test_Figure_extent()
+
+# %%
+def test_Figure_datetime():
+    
+    import pandas
+    from datetime import date, timedelta
+    data = pandas.DataFrame()
+    data["Apples"]  = [2,5,7,2,6,8,3,6,2,1]
+    data["Oranges"] = [9,6,2,1,5,7,8,9,4,2]
+    data.index = [date(2024,1,1)+timedelta(x*2) for x in range(10)]
+    
+    with Figure(
+        layout=(2,1),
+        x_major_ticks="weeks",
+        x_major_fmt="%b %d",
+        x_minor_ticks="days",
+        gridspec_kw=dict(hspace=0.7)
+    ):
+        with Panel("a) Apples") as ax:
+            ax.plot(data.index, data.Apples)
+        with Panel("b) Oranges") as ax:
+            ax.plot(data.index, data.Oranges)
+test_Figure_datetime()
 # %%
