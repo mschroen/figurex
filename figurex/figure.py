@@ -324,8 +324,9 @@ class Figure(Panel):
         # Main
         title: str = "",
         layout = (1,1), # tuple or lists
-        size: tuple = (6,6),
+        size: tuple = (6,3),
         save = None, # str
+        gridspec_kw: dict = dict(hspace=0.7, wspace=0.3), # wspace, hspace, width_ratios, height_ratios
         **kwargs
     ):
         # Set properties
@@ -335,6 +336,7 @@ class Figure(Panel):
         self.save   = save
 
         self.subplot_kw = dict()
+        self.gridspec_kw = gridspec_kw
         if "projection" in kwargs:
             self.subplot_kw = dict(projection=kwargs["projection"])
 
@@ -378,6 +380,8 @@ class Figure(Panel):
         # If it contains only one panel, behave like a Panel
         if Figure.is_panel:
             super().__exit__(type, value, traceback)
+        else:
+            self.fig.suptitle(self.title, y=1.02)
 
         # Save figure to memory, do not display
         if self.save == "memory":
@@ -398,7 +402,7 @@ class Figure(Panel):
             self.layout[0],
             self.layout[1],
             figsize = self.size,
-            # gridspec_kw = self.gridspec_kw,
+            gridspec_kw = self.gridspec_kw,
             subplot_kw = self.subplot_kw 
         )
         # Return a flat list of axes 
