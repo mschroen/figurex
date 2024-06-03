@@ -326,6 +326,9 @@ class Figure(Panel):
         layout = (1,1), # tuple or lists
         size: tuple = (6,3),
         save = None, # str
+        save_dpi: int = 250,
+        save_format: str = None,
+        transparent: bool = True,
         gridspec_kw: dict = dict(hspace=0.7, wspace=0.3), # wspace, hspace, width_ratios, height_ratios
         **kwargs
     ):
@@ -334,6 +337,9 @@ class Figure(Panel):
         self.size   = size
         self.title  = title
         self.save   = save
+        self.save_dpi = save_dpi
+        self.save_format = save_format
+        self.transparent = transparent
 
         self.subplot_kw = dict()
         self.gridspec_kw = gridspec_kw
@@ -383,17 +389,36 @@ class Figure(Panel):
         else:
             self.fig.suptitle(self.title, y=1.02)
 
-        # Save figure to memory, do not display
-        if self.save == "memory":
+        if not self.save:
+            pass
+
+        elif self.save == "memory":
+            # Save figure to memory, do not display
             self.fig.savefig(
                 self.memory,
                 format="svg",
                 bbox_inches='tight',
                 facecolor="none",
-                dpi=250,
-                transparent=True
+                dpi=self.save_dpi,
+                transparent=self.transparent
             )
             plt.close()
+        
+        else:
+            # Create folder if not existent
+            parent_folders = os.path.dirname(self.save)
+            if parent_folders and not os.path.exists(parent_folders):
+                os.makedirs(parent_folders)
+
+            # Save and close single plot
+            self.fig.savefig(
+                self.save,
+                format=self.save_format,
+                bbox_inches='tight',
+                facecolor="none",
+                dpi=self.save_dpi,
+                transparent=self.transparent
+            )
             
 
     def create_panel_grid(self):

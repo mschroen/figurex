@@ -71,4 +71,19 @@ def test_Figure_datetime():
         with Panel("b) Oranges") as ax:
             ax.plot(data.index, data.Oranges)
 test_Figure_datetime()
+
+# %%
+def test_Figure_save():
+    with Figure(
+        "Black & White",
+        layout=(1,2),
+        size=(6,3),
+        save="../tests/out/figure.png"
+    ):
+        with Panel("a) Magic") as ax:
+            ax.plot([1,2],[3,4])
+        with Panel("b) Reality", grid="") as ax:
+            ax.plot([5,5],[6,4])
+
+test_Figure_save()
 # %%
