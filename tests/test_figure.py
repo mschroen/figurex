@@ -40,5 +40,12 @@ def test_Figure_mosaic():
 
 test_Figure_mosaic()
 
-
+# %%
+def test_Figure_extent():
+    with Figure(layout=(1,2)):
+        with Panel("a) Magic", x_range=(1,6)) as ax:
+            ax.plot([1,2],[3,4])
+        with Panel("b) Reality", extent=[4.9,5.1,3,7]) as ax:
+            ax.plot([5,5],[6,4])
+test_Figure_extent()
 # %%

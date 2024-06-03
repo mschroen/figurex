@@ -15,7 +15,10 @@ class Panel:
     # Keyword arguments or Panels 
     default_panel_kw = dict(
         spines = "lb",
-        grid="xy"
+        grid="xy",
+        x_range = None,
+        y_range = None,
+        extent = None, # === bbox
     )
     panel_kw = default_panel_kw
 
@@ -25,18 +28,31 @@ class Panel:
         # Main
         title: str = "",
         spines: str = None,
-        grid: str = None
+        grid: str = None,
+        # Axis
+        x_range: tuple = None,
+        y_range: tuple = None,
+        extent: list = None, # === bbox
     ):  
         # Set main properties
         self.title  = title
         self.spines = spines
         self.grid = grid
+        self.x_range = x_range
+        self.y_range = y_range
+        self.extent = extent
 
         # Set properties from Panel kwarg (prio 1) or Figure kwarg (prio 2)
         if spines is None and "spines" in Panel.panel_kw:
             self.spines = Panel.panel_kw["spines"]
         if grid is None and "grid" in Panel.panel_kw:
             self.grid = Panel.panel_kw["grid"]
+        if x_range is None and "x_range" in Panel.panel_kw:
+            self.x_range = Panel.panel_kw["x_range"]
+        if y_range is None and "y_range" in Panel.panel_kw:
+            self.y_range = Panel.panel_kw["y_range"]
+        if extent is None and "extent" in Panel.panel_kw:
+            self.extent = Panel.panel_kw["extent"]
 
         
     def __enter__(self):
@@ -53,6 +69,8 @@ class Panel:
             self.set_spines(self.ax, self.spines)
         if self.grid:
             self.set_grid(self.ax, self.grid)
+        if self.extent or self.x_range or self.y_range:
+            self.set_range(self.ax, self.extent, self.x_range, self.y_range)
 
 
     @staticmethod
@@ -137,6 +155,36 @@ class Panel:
             else:
                 ax.spines[spines_label[s]].set_visible(False)
 
+
+    @staticmethod
+    def set_range(
+        ax,
+        extent=None,
+        x_range: tuple = (None,None),
+        y_range: tuple = (None,None)
+    ):
+        """
+        Applies x and y axis ranges or bounding box to axis.
+
+        Parameters
+        ----------
+        ax : 
+            Axis to change.
+        extent : list or tuple, optional
+            Bounding box [x0,x1,y0,y1], by default None
+        x_range : tuple, optional
+            tuple (x0,x1), by default (None,None)
+        y_range : tuple, optional
+            tuple (y0,y1), by default (None,None)
+        """
+        if extent:
+            ax.set_xlim(extent[0], extent[1])
+            ax.set_ylim(extent[2], extent[3])
+        else:
+            if isinstance(x_range, tuple):
+                ax.set_xlim(x_range[0], x_range[1])
+            if isinstance(y_range, tuple):
+                ax.set_ylim(y_range[0], y_range[1])
 
 class Figure(Panel):
     """
