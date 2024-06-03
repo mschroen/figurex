@@ -24,6 +24,7 @@ class Panel:
         x_minor_ticks = None,
         x_major_fmt = None,
         x_minor_fmt = None,
+        colorbar = None,
     )
     panel_kw = default_panel_kw
 
@@ -42,6 +43,7 @@ class Panel:
         x_minor_ticks: str = None,
         x_major_fmt: str = None,
         x_minor_fmt: str =None,
+        colorbar = None
     ):  
         # Set main properties
         self.title  = title
@@ -54,6 +56,7 @@ class Panel:
         self.x_minor_ticks = x_minor_ticks
         self.x_major_fmt = x_major_fmt
         self.x_minor_fmt = x_minor_fmt
+        self.colorbar = colorbar
 
         # Set properties from Panel kwarg (prio 1) or Figure kwarg (prio 2)
         if spines is None and "spines" in Panel.panel_kw:
@@ -96,6 +99,8 @@ class Panel:
             self.set_time_ticks(self.ax, self.x_major_ticks, "major", fmt=self.x_major_fmt)
         if self.x_minor_ticks:
             self.set_time_ticks(self.ax, self.x_minor_ticks, "minor", fmt=self.x_minor_fmt)
+        if self.colorbar:
+            self.add_colorbar(self.ax, self.colorbar)
 
 
     @staticmethod
@@ -255,6 +260,49 @@ class Panel:
                 ax.xaxis.set_major_formatter(DateFormatter(fmt))
             elif which=='minor':
                 ax.xaxis.set_minor_formatter(DateFormatter(fmt))
+
+    @staticmethod
+    def add_colorbar(
+        ax = None,
+        points = None,
+        label: str = None,
+        ticks = None,
+        ticklabels = None,
+        ticks_kw: dict = dict(),
+        bar_kw:   dict = dict(shrink=0.6, pad=0.02, aspect=20, extend="both"),
+        label_kw: dict = dict(rotation=270, labelpad=20),
+    ):
+        """
+        Adds a color bar to the current panel.
+
+        Parameters
+        ----------
+        ax  , optional
+            Axis to draw on., by default None
+        points , optional
+            Line2D object to be described, by default None
+        label : str, optional
+            Axis label of the colorbar, by default None
+        ticks : _type_, optional
+            Ticks of the colorbar, by default None
+        ticklabels : _type_, optional
+            Tick labels, by default None
+        ticks_kw : dict, optional
+            Other tick keywords, by default dict()
+        bar_kw : dict, optional
+            Bar keywords, by default dict(shrink=0.6, pad=0.02, aspect=20, extend="both")
+        label_kw : dict, optional
+            Label keywords, by default dict(rotation=270, labelpad=20)
+        """
+        cb = plt.colorbar(points, ax=ax, **bar_kw)
+        if not ticks is None:
+            cb.ax.set_yticks(ticks)
+        if not ticklabels is None:
+            cb.ax.set_yticklabels(ticklabels, **ticks_kw)
+        if not label is None:
+            cb.set_label(label, **label_kw)
+
+
 class Figure(Panel):
     """
     Context manager for Figures.
