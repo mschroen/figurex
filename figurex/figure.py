@@ -3,6 +3,7 @@ import io
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.dates import YearLocator, MonthLocator, DayLocator, WeekdayLocator, HourLocator, MinuteLocator, DateFormatter
 
 
 class Panel:
@@ -15,7 +16,15 @@ class Panel:
     # Keyword arguments or Panels 
     default_panel_kw = dict(
         spines = "lb",
-        grid="xy"
+        grid="xy",
+        x_range = None,
+        y_range = None,
+        extent = None, # === bbox
+        x_major_ticks = None,
+        x_minor_ticks = None,
+        x_major_fmt = None,
+        x_minor_fmt = None,
+        colorbar = None,
     )
     panel_kw = default_panel_kw
 
@@ -25,18 +34,49 @@ class Panel:
         # Main
         title: str = "",
         spines: str = None,
-        grid: str = None
+        grid: str = None,
+        # Axis
+        x_range: tuple = None,
+        y_range: tuple = None,
+        extent: list = None, # === bbox
+        x_major_ticks: str = None,
+        x_minor_ticks: str = None,
+        x_major_fmt: str = None,
+        x_minor_fmt: str =None,
+        colorbar = None
     ):  
         # Set main properties
         self.title  = title
         self.spines = spines
         self.grid = grid
+        self.x_range = x_range
+        self.y_range = y_range
+        self.extent = extent
+        self.x_major_ticks = x_major_ticks
+        self.x_minor_ticks = x_minor_ticks
+        self.x_major_fmt = x_major_fmt
+        self.x_minor_fmt = x_minor_fmt
+        self.colorbar = colorbar
 
         # Set properties from Panel kwarg (prio 1) or Figure kwarg (prio 2)
         if spines is None and "spines" in Panel.panel_kw:
             self.spines = Panel.panel_kw["spines"]
         if grid is None and "grid" in Panel.panel_kw:
             self.grid = Panel.panel_kw["grid"]
+        if x_range is None and "x_range" in Panel.panel_kw:
+            self.x_range = Panel.panel_kw["x_range"]
+        if y_range is None and "y_range" in Panel.panel_kw:
+            self.y_range = Panel.panel_kw["y_range"]
+        if extent is None and "extent" in Panel.panel_kw:
+            self.extent = Panel.panel_kw["extent"]
+        if x_major_ticks is None and "x_major_ticks" in Panel.panel_kw:
+            self.x_major_ticks = Panel.panel_kw["x_major_ticks"]
+        if x_minor_ticks is None and "x_minor_ticks" in Panel.panel_kw:
+            self.x_minor_ticks = Panel.panel_kw["x_minor_ticks"]
+        if x_major_fmt is None and "x_major_fmt" in Panel.panel_kw:
+            self.x_major_fmt = Panel.panel_kw["x_major_fmt"]
+        if x_minor_fmt is None and "grid" in Panel.panel_kw:
+            self.x_minor_fmt = Panel.panel_kw["x_minor_fmt"]
 
         
     def __enter__(self):
@@ -53,6 +93,14 @@ class Panel:
             self.set_spines(self.ax, self.spines)
         if self.grid:
             self.set_grid(self.ax, self.grid)
+        if self.extent or self.x_range or self.y_range:
+            self.set_range(self.ax, self.extent, self.x_range, self.y_range)
+        if self.x_major_ticks:
+            self.set_time_ticks(self.ax, self.x_major_ticks, "major", fmt=self.x_major_fmt)
+        if self.x_minor_ticks:
+            self.set_time_ticks(self.ax, self.x_minor_ticks, "minor", fmt=self.x_minor_fmt)
+        if self.colorbar:
+            self.add_colorbar(self.ax, self.colorbar)
 
 
     @staticmethod
@@ -138,6 +186,123 @@ class Panel:
                 ax.spines[spines_label[s]].set_visible(False)
 
 
+    @staticmethod
+    def set_range(
+        ax,
+        extent=None,
+        x_range: tuple = (None,None),
+        y_range: tuple = (None,None)
+    ):
+        """
+        Applies x and y axis ranges or bounding box to axis.
+
+        Parameters
+        ----------
+        ax : 
+            Axis to change.
+        extent : list or tuple, optional
+            Bounding box [x0,x1,y0,y1], by default None
+        x_range : tuple, optional
+            tuple (x0,x1), by default (None,None)
+        y_range : tuple, optional
+            tuple (y0,y1), by default (None,None)
+        """
+        if extent:
+            ax.set_xlim(extent[0], extent[1])
+            ax.set_ylim(extent[2], extent[3])
+        else:
+            if isinstance(x_range, tuple):
+                ax.set_xlim(x_range[0], x_range[1])
+            if isinstance(y_range, tuple):
+                ax.set_ylim(y_range[0], y_range[1])
+
+    @staticmethod
+    def set_time_ticks(
+        ax=None,
+        how: str = None,
+        which: str = "major",
+        fmt: str = None
+    ):
+        """
+        Format time axis.
+
+        Parameters
+        ----------
+        ax , optional
+            Axis to change, by default None
+        how : str, optional
+            Label every minutes, hours, days, weeks, months, or years, by default None
+        which : str, optional
+            Label major or minor ticks, by default "major"
+        fmt : str, optional
+            Format the date, e.g. "%b %d, %H_%M", by default None
+        """
+        if how:
+            if how=='minutes':
+                how = MinuteLocator()
+            if how=='hours':
+                how = HourLocator()
+            elif how=='days':
+                how = DayLocator()
+            elif how=='weeks':
+                how = WeekdayLocator()
+            elif how=='months':
+                how = MonthLocator()
+            elif how=='years':
+                how = YearLocator()
+
+            if which=='major':
+                ax.xaxis.set_major_locator(how)
+            elif which=='minor':
+                ax.xaxis.set_minor_locator(how)
+        if fmt:
+            if which=='major':
+                ax.xaxis.set_major_formatter(DateFormatter(fmt))
+            elif which=='minor':
+                ax.xaxis.set_minor_formatter(DateFormatter(fmt))
+
+    @staticmethod
+    def add_colorbar(
+        ax = None,
+        points = None,
+        label: str = None,
+        ticks = None,
+        ticklabels = None,
+        ticks_kw: dict = dict(),
+        bar_kw:   dict = dict(shrink=0.6, pad=0.02, aspect=20, extend="both"),
+        label_kw: dict = dict(rotation=270, labelpad=20),
+    ):
+        """
+        Adds a color bar to the current panel.
+
+        Parameters
+        ----------
+        ax  , optional
+            Axis to draw on., by default None
+        points , optional
+            Line2D object to be described, by default None
+        label : str, optional
+            Axis label of the colorbar, by default None
+        ticks : _type_, optional
+            Ticks of the colorbar, by default None
+        ticklabels : _type_, optional
+            Tick labels, by default None
+        ticks_kw : dict, optional
+            Other tick keywords, by default dict()
+        bar_kw : dict, optional
+            Bar keywords, by default dict(shrink=0.6, pad=0.02, aspect=20, extend="both")
+        label_kw : dict, optional
+            Label keywords, by default dict(rotation=270, labelpad=20)
+        """
+        cb = plt.colorbar(points, ax=ax, **bar_kw)
+        if not ticks is None:
+            cb.ax.set_yticks(ticks)
+        if not ticklabels is None:
+            cb.ax.set_yticklabels(ticklabels, **ticks_kw)
+        if not label is None:
+            cb.set_label(label, **label_kw)
+
+
 class Figure(Panel):
     """
     Context manager for Figures.
@@ -159,8 +324,12 @@ class Figure(Panel):
         # Main
         title: str = "",
         layout = (1,1), # tuple or lists
-        size: tuple = (6,6),
+        size: tuple = (6,3),
         save = None, # str
+        save_dpi: int = 250,
+        save_format: str = None,
+        transparent: bool = True,
+        gridspec_kw: dict = dict(hspace=0.7, wspace=0.3), # wspace, hspace, width_ratios, height_ratios
         **kwargs
     ):
         # Set properties
@@ -168,8 +337,12 @@ class Figure(Panel):
         self.size   = size
         self.title  = title
         self.save   = save
+        self.save_dpi = save_dpi
+        self.save_format = save_format
+        self.transparent = transparent
 
         self.subplot_kw = dict()
+        self.gridspec_kw = gridspec_kw
         if "projection" in kwargs:
             self.subplot_kw = dict(projection=kwargs["projection"])
 
@@ -190,7 +363,10 @@ class Figure(Panel):
 
     def __enter__(self):
         # Create subplots with the given layout
-        self.ax = self.create_panel_grid()
+        if isinstance(self.layout, tuple):
+            self.ax = self.create_panel_grid()
+        elif isinstance(self.layout, list):
+            self.ax = self.create_panel_mosaic()
         
         # If it contains only one panel, behave like a Panel
         if Figure.is_panel:
@@ -210,18 +386,39 @@ class Figure(Panel):
         # If it contains only one panel, behave like a Panel
         if Figure.is_panel:
             super().__exit__(type, value, traceback)
+        else:
+            self.fig.suptitle(self.title, y=1.02)
 
-        # Save figure to memory, do not display
-        if self.save == "memory":
+        if not self.save:
+            pass
+
+        elif self.save == "memory":
+            # Save figure to memory, do not display
             self.fig.savefig(
                 self.memory,
                 format="svg",
                 bbox_inches='tight',
                 facecolor="none",
-                dpi=250,
-                transparent=True
+                dpi=self.save_dpi,
+                transparent=self.transparent
             )
             plt.close()
+        
+        else:
+            # Create folder if not existent
+            parent_folders = os.path.dirname(self.save)
+            if parent_folders and not os.path.exists(parent_folders):
+                os.makedirs(parent_folders)
+
+            # Save and close single plot
+            self.fig.savefig(
+                self.save,
+                format=self.save_format,
+                bbox_inches='tight',
+                facecolor="none",
+                dpi=self.save_dpi,
+                transparent=self.transparent
+            )
             
 
     def create_panel_grid(self):
@@ -230,9 +427,14 @@ class Figure(Panel):
             self.layout[0],
             self.layout[1],
             figsize = self.size,
-            # gridspec_kw = self.gridspec_kw,
+            gridspec_kw = self.gridspec_kw,
             subplot_kw = self.subplot_kw 
         )
+        # Return a flat list of axes 
+        if self.layout[0]==1 and self.layout[1]==1:
+            self.axes = [self.axes]
+        else:
+            self.axes = self.axes.flatten()
         return(self.axes)
 
 
@@ -245,6 +447,8 @@ class Figure(Panel):
             # gridspec_kw = self.gridspec_kw,
             subplot_kw = self.subplot_kw 
         )
+        # Convert labeled dict to list
+        self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
         return(self.axes)
     
     @staticmethod
