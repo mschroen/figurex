@@ -3,7 +3,7 @@ import numpy as np
 from figurex.figure import Figure, Panel
 
 # Using Basemap
-from mpl_toolkits.basemap import Basemap as mplbasemap # pip install basemap
+from mpl_toolkits.basemap import Basemap as mplbasemap  # pip install basemap
 
 
 class Basemap(Panel):
@@ -13,39 +13,49 @@ class Basemap(Panel):
     """
 
     default_features = [
-        "ocean", "coast", "boundary", "continents", "countries", "rivers", "states"
+        "ocean",
+        "coast",
+        "boundary",
+        "continents",
+        "countries",
+        "rivers",
+        "states",
     ]
     default_features_kw = dict(
-        ocean = dict(land_color="lightblue", ocean_color="lightblue"), # workaround because ocean does not show up in pdf export
-        coast = dict(color="black", linewidth=0.5),
-        boundary = dict(fill_color="lightblue"),
-        continents = dict(color="linen", lake_color="lightblue"),
-        countries = dict(color="black", linewidth=0.5, linestyle="-"),
-        rivers = dict(color="lightblue"),
-        states = dict(color="green", linewidth=1),
+        ocean=dict(
+            land_color="lightblue", ocean_color="lightblue"
+        ),  # workaround because ocean does not show up in pdf export
+        coast=dict(color="black", linewidth=0.5),
+        boundary=dict(fill_color="lightblue"),
+        continents=dict(color="linen", lake_color="lightblue"),
+        countries=dict(color="black", linewidth=0.5, linestyle="-"),
+        rivers=dict(color="lightblue"),
+        states=dict(color="green", linewidth=1),
     )
-    default_grid_kw = dict(dashes=[1,0], linewidth=0.1, labels=[1,0,0,1], fontsize=7)
+    default_grid_kw = dict(
+        dashes=[1, 0], linewidth=0.1, labels=[1, 0, 0, 1], fontsize=7
+    )
 
     def __init__(
         self,
         *args,
         map_type: str = "normal",
-        projection: str = "merc", # merc cyl aeqd
+        projection: str = "merc",  # merc cyl aeqd
         tiles: str = None,
-        tiles_cache: bool = False, 
+        tiles_cache: bool = False,
         zoom: int = 1,
-        center = None,
-        resolution: str = "i", # c, l, i, h, f
-        anchor = "NW", # SW, S, SE, E, NE, N, NW, W
-        suppress_ticks = False,
-        grid_kw = None,
+        center=None,
+        resolution: str = "i",  # c, l, i, h, f
+        anchor="NW",  # SW, S, SE, E, NE, N, NW, W
+        suppress_ticks=False,
+        grid_kw=None,
         features: list | None = None,
         features_kw: dict | None = dict(),
-        epsg = None,
+        epsg=None,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-    
+
         self.tiles = tiles
         self.tiles_cache = tiles_cache
         self.zoom = zoom
@@ -53,7 +63,7 @@ class Basemap(Panel):
         self.bbox = self.extent
         # if projection=='PlateCarree' or projection=='flat':
         #     projection = cartopy.crs.PlateCarree()
-        self.projection = projection 
+        self.projection = projection
         self.resolution = resolution
         self.map_type = map_type
         self.epsg = epsg
@@ -64,15 +74,14 @@ class Basemap(Panel):
 
         self.anchor = anchor
         self.suppress_ticks = suppress_ticks
-        
+
         if features is None:
             self.features = {
-                k: self.__class__.default_features_kw[k] for k in self.__class__.default_features
+                k: self.__class__.default_features_kw[k]
+                for k in self.__class__.default_features
             }
         else:
-            self.features = {
-                k: self.__class__.default_features_kw[k] for k in features
-            }
+            self.features = {k: self.__class__.default_features_kw[k] for k in features}
         for fkw in features_kw:
             self.features[fkw] = features_kw[fkw]
 
@@ -80,8 +89,8 @@ class Basemap(Panel):
             if self.bbox is None:
                 self.center = (10, 50)
             else:
-                self.center = (self.bbox[0]-self.bbox[1], self.bbox[3]-self.bbox[2])
-        
+                self.center = (self.bbox[0] - self.bbox[1], self.bbox[3] - self.bbox[2])
+
         # self.subplot_kw["projection"] = self.projection
 
     def __enter__(self):
@@ -89,7 +98,7 @@ class Basemap(Panel):
         self.ax = Figure.get_next_axis()
 
         if self.map_type == "normal":
-              
+
             self.Map = mplbasemap(
                 llcrnrlon=self.extent[0],
                 llcrnrlat=self.extent[2],
@@ -110,32 +119,32 @@ class Basemap(Panel):
             self.set_grid()
 
         elif self.map_type == "globe":
-            
+
             self.Map = mplbasemap(
-                projection='ortho',
+                projection="ortho",
                 lat_0=self.center[1],
                 lon_0=self.center[0],
                 fix_aspect=True,
-                anchor=self.anchor, 
-                ax=self.ax,   
-            )    
+                anchor=self.anchor,
+                ax=self.ax,
+            )
 
             self.set_features()
-                    
-            self.grid_kw["labels"] = [0,0,0,0]
+
+            self.grid_kw["labels"] = [0, 0, 0, 0]
             if self.x_range is None:
-                self.x_range = (-180, 180+1, 45)
+                self.x_range = (-180, 180 + 1, 45)
             if self.y_range is None:
-                self.y_range = (-90, 90+1, 30)
+                self.y_range = (-90, 90 + 1, 30)
             self.set_grid()
 
         elif self.map_type == "world":
-            
+
             if self.extent is None:
                 self.extent = (-180, 180, -90, 90)
 
             self.Map = mplbasemap(
-                projection='cyl',
+                projection="cyl",
                 lat_0=self.center[1],
                 lon_0=self.center[0],
                 llcrnrlon=self.extent[0],
@@ -143,18 +152,18 @@ class Basemap(Panel):
                 urcrnrlon=self.extent[1],
                 urcrnrlat=self.extent[3],
                 fix_aspect=True,
-                anchor=self.anchor, 
-                ax=self.ax,   
+                anchor=self.anchor,
+                ax=self.ax,
             )
-            
+
             self.set_features()
             self.set_grid()
-            
+
         # self.ax = self.update_projection(self.ax, self.projection)
         return self.Map
 
     def __exit__(self, type, value, traceback):
-        
+
         if self.tiles == "marble":
             self.Map.bluemarble(scale=self.zoom)
         elif self.tiles == "relief":
@@ -168,7 +177,7 @@ class Basemap(Panel):
         #         tiles=self.tiles,
         #         zoom=self.zoom,
         #         cache=self.tiles_cache
-        #     )  
+        #     )
 
         # Apply basic settings to simplify life.
         if self.title:
@@ -178,7 +187,6 @@ class Basemap(Panel):
         if self.colorbar:
             self.add_colorbar(self.ax, self.colorbar)
 
-        
     def set_features(self):
         """
         Applies map features
@@ -205,12 +213,17 @@ class Basemap(Panel):
         """
         # x
         if isinstance(self.x_range, tuple):
-            self.Map.drawmeridians(np.arange(self.x_range[0], self.x_range[1], self.x_range[2]), **self.grid_kw)
+            self.Map.drawmeridians(
+                np.arange(self.x_range[0], self.x_range[1], self.x_range[2]),
+                **self.grid_kw
+            )
         elif self.extent:
             self.Map.drawmeridians([self.extent[0], self.extent[1]], **self.grid_kw)
         # y
         if isinstance(self.y_range, tuple):
-            self.Map.drawparallels(np.arange(self.y_range[0], self.y_range[1], self.y_range[2]), **self.grid_kw)
+            self.Map.drawparallels(
+                np.arange(self.y_range[0], self.y_range[1], self.y_range[2]),
+                **self.grid_kw
+            )
         elif self.extent:
             self.Map.drawparallels([self.extent[2], self.extent[3]], **self.grid_kw)
-        
