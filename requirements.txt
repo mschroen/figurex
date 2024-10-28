@@ -1,7 +1,0 @@
-sphinx
-sphinx_rtd_theme
-nose
-coverage
-pypi-publisher
-matplotlib
-cartopy
