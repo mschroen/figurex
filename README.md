@@ -76,7 +76,7 @@ with Figure(size=(3,3)):
     
 - Check out the [Examples Notebook](https://github.com/mschroen/figurex/blob/main/examples.ipynb)!
 
-![Figurex examples](docs/figures-examples.png)
+![Figurex examples](https://github.com/mschroen/figurex/blob/main/docs/figurex-examples.png)
 
 
 ## Install
