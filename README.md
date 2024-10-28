@@ -1,5 +1,5 @@
 # figurex
-Handy Figure generation with conteXt managers in python.
+Make figures with context managers in python: quicker, simpler, more readable.
 
 # Examples
 

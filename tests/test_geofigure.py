@@ -1,5 +1,5 @@
-# WIP
 ## %%
+# WIP
 from figurex.figure import Figure, Panel
 import matplotlib.pyplot as plt
 from figurex.geo.figure import GeoPanel

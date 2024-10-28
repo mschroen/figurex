@@ -1,10 +1,9 @@
 import os
 import io
 import numpy as np
-import matplotlib
+# import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator, WeekdayLocator, HourLocator, MinuteLocator, DateFormatter
-
 
 class Panel:
     """
@@ -190,8 +189,8 @@ class Panel:
     def set_range(
         ax,
         extent=None,
-        x_range: tuple = (None,None),
-        y_range: tuple = (None,None)
+        x_range: tuple = (None, None, None),
+        y_range: tuple = (None, None, None)
     ):
         """
         Applies x and y axis ranges or bounding box to axis.
@@ -210,11 +209,14 @@ class Panel:
         if extent:
             ax.set_xlim(extent[0], extent[1])
             ax.set_ylim(extent[2], extent[3])
-        else:
-            if isinstance(x_range, tuple):
-                ax.set_xlim(x_range[0], x_range[1])
-            if isinstance(y_range, tuple):
-                ax.set_ylim(y_range[0], y_range[1])
+        if isinstance(x_range, tuple):
+            ax.set_xlim(x_range[0], x_range[1])
+            if len(x_range)==3:
+                ax.set_xticks(np.arange(x_range[0], x_range[1], x_range[2]))
+        if isinstance(y_range, tuple):
+            ax.set_ylim(y_range[0], y_range[1])
+            if len(y_range)==3:
+                ax.set_yticks(np.arange(y_range[0], y_range[1], y_range[2]))
 
     @staticmethod
     def set_time_ticks(
@@ -301,6 +303,25 @@ class Panel:
             cb.ax.set_yticklabels(ticklabels, **ticks_kw)
         if not label is None:
             cb.set_label(label, **label_kw)
+
+    @staticmethod
+    def add_circle(
+        ax, x, y, radius=1,
+        fc='none', color='black',
+        ls='-'
+    ):
+        """
+        Usage:
+            add_circle(ax, x, y, r, "w", "k", "--")
+        """
+        circle = plt.Circle(
+            (x, y),
+            radius,
+            fc=fc,
+            color=color,
+            ls=ls
+        )
+        ax.add_patch(circle)
 
 
 class Figure(Panel):
@@ -396,7 +417,7 @@ class Figure(Panel):
             # Save figure to memory, do not display
             self.fig.savefig(
                 self.memory,
-                format="svg",
+                format=self.save_format,
                 bbox_inches='tight',
                 facecolor="none",
                 dpi=self.save_dpi,
@@ -469,5 +490,28 @@ class Figure(Panel):
             Figure.current_ax += 1
         # Return incremented active list element
         return axes_list[Figure.current_ax]
+    
+    @staticmethod
+    def get_axes():
+        """
+        Get list of axes from the current figure.
+
+        Usage
+        -----
+        for ax in Figure.get_axes():
+            ax.set_ylim(0,1)
+
+        Returns
+        -------
+        axes: numpy.array(matplotlib.axes._axes.Axes)
+        """
+        
+        # List of axes in active figure
+        axes_list = np.array(plt.gcf().axes)
+        
+        # Return
+        return axes_list
+
+    
 
 

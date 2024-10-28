@@ -1,24 +1,25 @@
 [tool.poetry]
 name = "figurex"
-version = "0.1.0"
+version = "0.1.4"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = ["Martin Schrön <martin@schroen.eu>"]
 license = "GPL"
 readme = "README.md"
 homepage = "https://github.com/mschroen/figurex"
 repository = "https://github.com/mschroen/figurex"
-keywords = ["plot", "matplotlib"]
+keywords = ["plot", "matplotlib", "cartopy", "basemap"]
 include = [
     "LICENSE",
 ]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = "^2.1.2"
-matplotlib = "^3.9.2"
+numpy = "1.*"
+matplotlib = "3.*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
+pandas = "2.*"
 
 [build-system]
 requires = ["poetry-core"]
