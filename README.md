@@ -1,14 +1,18 @@
 # Figurex
-Make figures with context managers in python: quicker, simpler, more readable.
-```bash
-pip install figurex
+Make figures with context managers in python: quicker, simpler, more readable. 
+
+
+```python
+with Figure() as ax:
+    ax.plot([1,2],[3,4])
 ```
+
 
 ## Idea 
 
 Tired of lengthy matplotlib code just for simple plotting? 
 ```python
-# How plotting used to be
+# How plotting used to be:
 import matplotlib.pyplot as pyplot
 
 fig, axes = plt.subplots(1,2, figsize=(4,5))
@@ -22,7 +26,7 @@ plt.show()
 ```
 Beautify your daily work with shorter and more readable code:
 ```python
-# How plotting becomes with figurex
+# How plotting becomes with figurex:
 from figurex import Figure, Panel
 
 with Figure("My plot", layout=(1,2), size=(4,5), save="file.png"):
@@ -31,7 +35,7 @@ with Figure("My plot", layout=(1,2), size=(4,5), save="file.png"):
     with Panel() as ax:
         ax.plot([2,3],[4,5])
 ```
-It is just a wrapper around standard matplotlib code, extend it your way without limits!
+The `Figure()` environment generates the `matplotlib`-based figure and axes for you, and automatically shows, saves, and closes the figure when leaving the context. It is just a wrapper around standard matplotlib code, you can use `ax` to modify the plot as you would normally do. Extend it your way without limits!
 
 ## Examples
 
@@ -67,14 +71,32 @@ from figurex import Basemap
 with Figure(size=(3,3)):
     with Basemap("Germany", extent=(5,15,46,55), tiles="relief") as Map:
         x,y = Map(12.385, 51.331)
-        Map.scatter(x, y,  marker="x", zorder=20, color="r", s=200, lw=2)
+        Map.scatter(x, y,  marker="x", color="red", s=200)
 ```    
     
 - Check out the [Examples Notebook](https://github.com/mschroen/figurex/blob/main/examples.ipynb)!
 
 
 
-## Related projects:
+
+## Install
+
+```bash
+pip install figurex
+```
+
+### Requirements
+
+- Minimal requirements (basic plotting):
+  - python >3.9
+  - numpy
+  - matplotlib
+- If you want to make geographic maps with figurex.cartopy:
+  - cartopy
+- If you want to make geographic maps with figurex.basemap:
+  - basemap >1.4
+
+## Related
 
 - A discussion on [GitHub/matplotlib](https://github.com/matplotlib/matplotlib/issues/5218/) actually requested this feature long ago.
 - The project [GitHub/contextplt](https://toshiakiasakura.github.io/contextplt/notebooks/usage.html) has implemented a similar concept.
