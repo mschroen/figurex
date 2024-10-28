@@ -13,7 +13,7 @@ with Figure() as ax:
 Tired of lengthy matplotlib code just for simple plotting? 
 ```python
 # How plotting used to be:
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(1,2, figsize=(4,5))
 plt.set_title("My plot")
@@ -76,7 +76,7 @@ with Figure(size=(3,3)):
     
 - Check out the [Examples Notebook](https://github.com/mschroen/figurex/blob/main/examples.ipynb)!
 
-
+![Figurex examples](docs/figures-examples.png)
 
 
 ## Install
