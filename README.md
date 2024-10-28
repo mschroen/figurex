@@ -1,5 +1,8 @@
 # Figurex
 Make figures with context managers in python: quicker, simpler, more readable.
+```bash
+pip install figurex
+```
 
 ## Idea 
 
