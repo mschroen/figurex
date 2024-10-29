@@ -17,8 +17,8 @@ Basics plotting
 .. automodule:: figurex.figure
    :members:
 
-Geographical maps
-=================
+Geographical mapping
+===================
 
 .. automodule:: figurex.cartopy
    :members:
