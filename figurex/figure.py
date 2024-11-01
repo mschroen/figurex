@@ -439,10 +439,8 @@ class Figure(Panel):
                 "An error occured while plotting the figure: {}",
                 e,
             )
-            if "KeyboardModifier" in e:
-                log.error(
-                    "Make sure that matplotlib.use('agg') is set before plotting to a PDF file."
-                )
+            if "KeyboardModifier" in str(e):
+                log.error("Make sure to set Figure.set_backend('agg') before plotting.")
         # Return a flat list of axes
         if self.layout[0] == 1 and self.layout[1] == 1:
             self.axes = [self.axes]
@@ -452,13 +450,21 @@ class Figure(Panel):
 
     def create_panel_mosaic(self):
         # Make subplots
-        self.fig, self.axes = plt.subplot_mosaic(
-            self.layout,
-            layout="constrained",
-            figsize=self.size,
-            # gridspec_kw = self.gridspec_kw,
-            subplot_kw=self.subplot_kw,
-        )
+        try:
+            self.fig, self.axes = plt.subplot_mosaic(
+                self.layout,
+                layout="constrained",
+                figsize=self.size,
+                # gridspec_kw = self.gridspec_kw,
+                subplot_kw=self.subplot_kw,
+            )
+        except Exception as e:
+            log.error(
+                "Cannot create the figure: {}",
+                e,
+            )
+            if "KeyboardModifier" in str(e):
+                log.error("Make sure to set Figure.set_backend('agg') before plotting.")
         # Convert labeled dict to list
         self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
         return self.axes
