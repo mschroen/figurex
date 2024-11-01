@@ -1,8 +1,9 @@
 import os
 import io
 import numpy as np
+from loguru import logger as log
 
-# import matplotlib
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.dates import (
     YearLocator,
@@ -325,6 +326,7 @@ class Figure(Panel):
         gridspec_kw: dict = dict(
             hspace=0.7, wspace=0.3
         ),  # wspace, hspace, width_ratios, height_ratios
+        backend="",
         **kwargs
     ):
         # Set properties
@@ -354,6 +356,11 @@ class Figure(Panel):
         Figure.is_panel = self.layout == (1, 1)
         if Figure.is_panel:
             super().__init__(title, **kwargs)
+
+        if backend:
+            # To plot into files, the agg backend must be used
+            Figure.set_backend(backend)
+            import matplotlib.pyplot as plt
 
     def __enter__(self):
         # Create subplots with the given layout
@@ -413,15 +420,29 @@ class Figure(Panel):
                 transparent=self.transparent,
             )
 
+    @staticmethod
+    def set_backend(backend: str):
+        matplotlib.use(backend)
+
     def create_panel_grid(self):
         # Regular grids, like (2,4)
-        self.fig, self.axes = plt.subplots(
-            self.layout[0],
-            self.layout[1],
-            figsize=self.size,
-            gridspec_kw=self.gridspec_kw,
-            subplot_kw=self.subplot_kw,
-        )
+        try:
+            self.fig, self.axes = plt.subplots(
+                self.layout[0],
+                self.layout[1],
+                figsize=self.size,
+                gridspec_kw=self.gridspec_kw,
+                subplot_kw=self.subplot_kw,
+            )
+        except Exception as e:
+            log.error(
+                "An error occured while plotting the figure: {}",
+                e,
+            )
+            if "KeyboardModifier" in e:
+                log.error(
+                    "Make sure that matplotlib.use('agg') is set before plotting to a PDF file."
+                )
         # Return a flat list of axes
         if self.layout[0] == 1 and self.layout[1] == 1:
             self.axes = [self.axes]
