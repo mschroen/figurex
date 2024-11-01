@@ -440,13 +440,19 @@ class Figure(Panel):
                 e,
             )
             if "KeyboardModifier" in str(e):
-                log.error("Make sure to set Figure.set_backend('agg') before plotting.")
-        # Return a flat list of axes
-        if self.layout[0] == 1 and self.layout[1] == 1:
-            self.axes = [self.axes]
+                log.warning(
+                    "Make sure to set Figure.set_backend('agg') before plotting."
+                )
+
+        if self.axes:
+            # Return a flat list of axes
+            if self.layout[0] == 1 and self.layout[1] == 1:
+                self.axes = [self.axes]
+            else:
+                self.axes = self.axes.flatten()
+            return self.axes
         else:
-            self.axes = self.axes.flatten()
-        return self.axes
+            return None
 
     def create_panel_mosaic(self):
         # Make subplots
@@ -464,7 +470,9 @@ class Figure(Panel):
                 e,
             )
             if "KeyboardModifier" in str(e):
-                log.error("Make sure to set Figure.set_backend('agg') before plotting.")
+                log.warning(
+                    "Make sure to set Figure.set_backend('agg') before plotting."
+                )
         # Convert labeled dict to list
         self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
         return self.axes
