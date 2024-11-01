@@ -91,6 +91,7 @@ pip install figurex
   - python >3.9
   - numpy
   - matplotlib
+  - neatlogger (wrapper for loguru, logging)
 - If you want to make geographic maps with figurex.cartopy:
   - cartopy
 - If you want to make geographic maps with figurex.basemap:

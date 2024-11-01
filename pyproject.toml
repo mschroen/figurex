@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "figurex"
-version = "0.1.9"
+version = "0.2.0"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = ["Martin Schrön <martin@schroen.eu>"]
-license = "GPL"
+license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/mschroen/figurex"
 repository = "https://github.com/mschroen/figurex"
@@ -16,6 +16,7 @@ include = [
 python = ">3.9"
 numpy = "<2.0"
 matplotlib = ">3.0"
+neatlogger = ">0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = ">3.0"

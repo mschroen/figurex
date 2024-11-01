@@ -1,7 +1,7 @@
 import os
 import io
 import numpy as np
-from loguru import logger as log
+from neatlogger import log
 
 import matplotlib
 import matplotlib.pyplot as plt
