@@ -481,3 +481,30 @@ class Figure(Panel):
 
         # Return
         return axes_list
+
+    @staticmethod
+    def as_object(
+        ax=None, format="png", tight=True, facecolor="none", dpi=300, transparent=True
+    ):
+        """
+        Saves a given figure ax as a BytesIO object.
+        It can be later used as an input for fpdf2 images.
+        Notes: svg format sometimes has issues with colors, use png instead.
+        """
+        import io
+
+        obj = io.BytesIO()
+        if ax is None:
+            fig = Figure.latest
+        else:
+            fig = ax.get_figure()
+
+        fig.savefig(
+            obj,
+            format=format,
+            bbox_inches="tight" if tight else None,
+            facecolor=facecolor,
+            dpi=dpi,
+            transparent=transparent,
+        )
+        return obj

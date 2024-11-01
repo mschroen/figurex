@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "figurex"
-version = "0.1.5"
+version = "0.1.6"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = ["Martin Schrön <martin@schroen.eu>"]
 license = "GPL"
@@ -14,7 +14,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">3.9"
-numpy = ">2.0"
+numpy = "<2.0"
 matplotlib = ">3.0"
 
 [tool.poetry.dev-dependencies]
