@@ -444,7 +444,7 @@ class Figure(Panel):
                     "Make sure to set Figure.set_backend('agg') before plotting."
                 )
 
-        if self.axes:
+        if self.fig:
             # Return a flat list of axes
             if self.layout[0] == 1 and self.layout[1] == 1:
                 self.axes = [self.axes]
