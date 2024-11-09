@@ -20,7 +20,9 @@ class Panel:
     """
     Context manager for figure panels. Inherited by class Figure.
     It looks for an active axis and applies basic settings.
-    Provides the axis as context.
+
+    Returns:
+        matplotlib.axes.Axes: Provides the axis as context.
     """
 
     # Keyword arguments or Panels
@@ -54,6 +56,21 @@ class Panel:
         x_minor_fmt: str = None,
         colorbar=None,
     ):
+        """Initialises a Panel instance.
+
+        Args:
+            title (str, optional): Title of the panel. Defaults to "", inheriting from the superior Figure.
+            spines (str, optional): Spines to show. The string may contain any of "lbtr" representing left, bottom, top, and right axis spines. Defaults to None, inheriting from the superior Figure.
+            grid (str, optional): Whether to show the grid. The string may contain any of "xy". Defaults to None, inheriting from the superior Figure.
+            x_range (tuple, optional): Range and tick steps of the x axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
+            y_range (tuple, optional): Range and tick steps of the y axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
+            extent (list, optional): Extent of the axes, providing a bounding box [x0, x1, y0, y1]. Defaults to None, inheriting from the superior Figure.
+            x_major_ticks (str, optional): Major x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
+            x_minor_ticks (str, optional): Minor x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
+            x_major_fmt (str, optional): Major x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
+            x_minor_fmt (str, optional): Minor x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
+            colorbar (plot, optional): Plot to be used for drawing a colorbar. Defaults to None, inheriting from the superior Figure.
+        """
         # Set main properties
         self.title = title
         self.spines = spines
@@ -289,8 +306,27 @@ class Panel:
             cb.set_label(label, **label_kw)
 
     @staticmethod
-    def add_circle(ax, x, y, radius=1, fc="none", color="black", ls="-"):
+    def add_circle(
+        ax: matplotlib.axes.Axes,
+        x,
+        y,
+        radius: float = 1.0,
+        fc: str = "none",
+        color: str = "black",
+        ls: str = "-"
+    ):
         """
+        Draws a circle on the plot.
+        
+        Args:
+            ax (matplotlib.axes.Axes): Axis object to draw on.
+            x (x axis data type): Center x location of the circle.
+            y (y axis data type): Center y location of the circle.
+            radius (float, optional): Radius of the circle. Defaults to 1.
+            fc (str, optional): Face color of the circle. Defaults to "none".
+            color (str, optional): Border color of the circle. Defaults to "black".
+            ls (str, optional): Line style of the circle. Defaults to "-".
+        
         Usage:
             add_circle(ax, x, y, r, "w", "k", "--")
         """
