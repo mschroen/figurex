@@ -1,4 +1,5 @@
 # %%
+import io
 from figurex.figure import Figure, Panel
 
 # %%
@@ -17,13 +18,13 @@ def test_Figure_grid():
             ax.plot([5,5],[6,4])
 
 test_Figure_grid()
-
 # %%
 def test_figure_memory():
-    with Figure("For later", save="memory") as memory:
+    with Figure("For later", show=False):
         with Panel("waff", grid="") as ax:
             ax.plot([5,5],[6,4])
-    memory
+    memory = Figure.as_object()
+    assert isinstance(memory, io.BytesIO)
 test_figure_memory()
 
 # %%

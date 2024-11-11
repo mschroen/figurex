@@ -345,6 +345,7 @@ class Figure(Panel):
     # When initiating Figure, no axis is active yet.
     # This will be incremented by Panel()
     current_ax = -1
+    current_fig = None
 
     # If the Figure contains only one panel
     is_panel = True
@@ -361,8 +362,7 @@ class Figure(Panel):
         transparent: bool = True,
         gridspec_kw: dict = dict(
             hspace=0.7, wspace=0.3
-        ),  # wspace, hspace, width_ratios, height_ratios
-        backend="",
+        show: bool = True,
         **kwargs
     ):
         # Set properties
@@ -373,6 +373,7 @@ class Figure(Panel):
         self.save_dpi = save_dpi
         self.save_format = save_format
         self.transparent = transparent
+        self.show = show
 
         self.subplot_kw = dict()
         self.gridspec_kw = gridspec_kw
@@ -412,10 +413,11 @@ class Figure(Panel):
         # If save to memory, do not provide the axes but the memory handler instead
         # This is the only exception when Figure does not provide axes.
         if self.save == "memory":
-            self.memory = io.BytesIO()
-            return self.memory
-        else:
-            return self.ax
+            log.warning("Figure(save='memory') is deprecated, use Figure.as_object() instead.")
+            # self.memory = io.BytesIO()
+            # return self.memory
+        
+        return self.ax
 
     def __exit__(self, type, value, traceback):
 
@@ -429,16 +431,17 @@ class Figure(Panel):
             pass
 
         elif self.save == "memory":
+            log.warning("Figure(save='memory') is deprecated, use Figure.as_object() instead.")
             # Save figure to memory, do not display
-            self.fig.savefig(
-                self.memory,
-                format=self.save_format,
-                bbox_inches="tight",
-                facecolor="none",
-                dpi=self.save_dpi,
-                transparent=self.transparent,
-            )
-            plt.close()
+            # self.fig.savefig(
+            #     self.memory,
+            #     format=self.save_format,
+            #     bbox_inches="tight",
+            #     facecolor="none",
+            #     dpi=self.save_dpi,
+            #     transparent=self.transparent,
+            # )
+            # plt.close()
 
         else:
             # Create folder if not existent
@@ -455,6 +458,11 @@ class Figure(Panel):
                 dpi=self.save_dpi,
                 transparent=self.transparent,
             )
+
+        if self.show:
+            plt.show()
+        else:
+            plt.close()
 
     @staticmethod
     def set_backend(backend: str):
@@ -481,6 +489,7 @@ class Figure(Panel):
                 )
 
         if self.fig:
+            Figure.current_fig = self.fig
             # Return a flat list of axes
             if self.layout[0] == 1 and self.layout[1] == 1:
                 self.axes = [self.axes]
@@ -510,11 +519,25 @@ class Figure(Panel):
                     "Make sure to set Figure.set_backend('agg') before plotting."
                 )
         # Convert labeled dict to list
-        self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
-        return self.axes
+        if self.fig:
+            Figure.current_fig = self.fig
+            self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
+            return self.axes
+        else:
+            return None
 
     @staticmethod
-    def get_next_axis():
+    def get() -> matplotlib.figure.Figure:
+        """
+        Get the current matplotlib figure instance.
+
+        Returns
+        -------
+        matplotlib.figure.Figure
+            The current figure instance.
+        """
+        return Figure.current_fig
+
         """
         Get the next ax instance from the current figure
 
@@ -525,7 +548,7 @@ class Figure(Panel):
         """
 
         # List of axes in active figure
-        axes_list = np.array(plt.gcf().axes)
+        axes_list = np.array(Figure.get().axes)
         # Figure keeps track of the active axes index, increment it!
         if not Figure.is_panel:
             Figure.current_ax += 1
@@ -566,7 +589,7 @@ class Figure(Panel):
 
         obj = io.BytesIO()
         if ax is None:
-            fig = Figure.latest
+            fig = Figure.get()
         else:
             fig = ax.get_figure()
 

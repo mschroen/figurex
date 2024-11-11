@@ -57,10 +57,10 @@ with Figure(layout=(1,2), size=(6,3)):
 
 Save a plot into memory for later use (e.g. in FPDF):
 ```python
-with Figure("Tea party", save="memory") as memory:
+with Figure("Tea party", show=False):
     with Panel() as ax:
         ax.plot([5,5],[6,4])
-memory
+my_figure = Figure.as_object()
 # <_io.BytesIO at 0x...>
 ```
 
