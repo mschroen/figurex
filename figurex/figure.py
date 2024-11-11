@@ -21,7 +21,8 @@ class Panel:
     Context manager for figure panels. Inherited by class Figure.
     It looks for an active axis and applies basic settings.
 
-    Returns:
+    Returns
+    -------
         matplotlib.axes.Axes: Provides the axis as context.
     """
 
@@ -49,27 +50,40 @@ class Panel:
         # Axis
         x_range: tuple = None,
         y_range: tuple = None,
-        extent: list = None,  # === bbox
+        extent: list | tuple = None,  # === bbox
         x_major_ticks: str = None,
         x_minor_ticks: str = None,
         x_major_fmt: str = None,
         x_minor_fmt: str = None,
         colorbar=None,
     ):
-        """Initialises a Panel instance.
+        """
+        Initialises a Panel instance.
 
-        Args:
-            title (str, optional): Title of the panel. Defaults to "", inheriting from the superior Figure.
-            spines (str, optional): Spines to show. The string may contain any of "lbtr" representing left, bottom, top, and right axis spines. Defaults to None, inheriting from the superior Figure.
-            grid (str, optional): Whether to show the grid. The string may contain any of "xy". Defaults to None, inheriting from the superior Figure.
-            x_range (tuple, optional): Range and tick steps of the x axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
-            y_range (tuple, optional): Range and tick steps of the y axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
-            extent (list, optional): Extent of the axes, providing a bounding box [x0, x1, y0, y1]. Defaults to None, inheriting from the superior Figure.
-            x_major_ticks (str, optional): Major x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
-            x_minor_ticks (str, optional): Minor x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
-            x_major_fmt (str, optional): Major x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
-            x_minor_fmt (str, optional): Minor x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
-            colorbar (plot, optional): Plot to be used for drawing a colorbar. Defaults to None, inheriting from the superior Figure.
+        Parameters
+        ----------
+        title: str, optional
+            Title of the panel. Defaults to "", inheriting from the superior Figure.
+        spines: str, optional
+            Spines to show. The string may contain any of "lbtr" representing left, bottom, top, and right axis spines. Defaults to None, inheriting from the superior Figure.
+        grid: str, optional
+            Whether to show the grid. The string may contain any of "xy". Defaults to None, inheriting from the superior Figure.
+        x_range: tuple, optional
+            Range and tick steps of the x axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
+        y_range: tuple, optional
+            Range and tick steps of the y axis (from, to, steps). Defaults to None, inheriting from the superior Figure.
+        extent: list | tuple, optional
+            Extent of the axes, providing a bounding box [x0, x1, y0, y1]. Defaults to None, inheriting from the superior Figure.
+        x_major_ticks: str, optional
+            Major x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
+        x_minor_ticks: str, optional
+            Minor x axis ticks for time serieses, can be hours, days, weeks, months, years. Defaults to None, inheriting from the superior Figure.
+        x_major_fmt: str, optional
+            Major x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
+        x_minor_fmt: str, optional
+            Minor x axis tick format, e.g. "%b %Y". Defaults to None, inheriting from the superior Figure.
+        colorbar: plot, optional
+            Plot to be used for drawing a colorbar. Defaults to None, inheriting from the superior Figure.
         """
         # Set main properties
         self.title = title
@@ -104,12 +118,22 @@ class Panel:
         if x_minor_fmt is None and "grid" in Panel.panel_kw:
             self.x_minor_fmt = Panel.panel_kw["x_minor_fmt"]
 
-    def __enter__(self):
+    def __enter__(self) -> matplotlib.axes.Axes:
+        """
+        When entering the context, return the current panel axis.
+
+        Returns
+        -------
+            matplotlib.axes.Axes: Axis object for the current panel.
+        """
         # Determine the next available axis and provide it.
         self.ax = Figure.get_next_axis()
         return self.ax
 
     def __exit__(self, type, value, traceback):
+        """
+        When exiting the context, set additional axis properties.
+        """
         # Apply basic settings to simplify life.
         if self.title:
             self.set_title(self.ax, self.title)
@@ -131,13 +155,13 @@ class Panel:
             self.add_colorbar(self.ax, self.colorbar)
 
     @staticmethod
-    def set_title(ax, text: str = "", fontsize: int = 10):
+    def set_title(ax: matplotlib.axes.Axes, text: str = "", fontsize: int = 10):
         """
-        Set title of the panel, e.g.: a) Correlation
+        Set title of the panel, e.g.: "a) Correlation"
 
         Parameters
         ----------
-        ax : matplotlib.axes._axes.Axes
+        ax : matplotlib.axes.Axes
             Axis to draw on.
         text : str, optional
             text for the title, by default ""
@@ -148,14 +172,18 @@ class Panel:
 
     @staticmethod
     def set_grid(
-        ax, dimension: str = "xy", color: str = "k", alpha: float = 1, **kwargs
+        ax: matplotlib.axes.Axes,
+        dimension: str = "xy",
+        color: str = "k",
+        alpha: float = 1,
+        **kwargs
     ):
         """
         Set grid
 
         Parameters
         ----------
-        ax : matplotlib.axes._axes.Axes
+        ax : matplotlib.axes.Axes
             Axis to draw on.
         dimension : str, optional
             Dimension, e.g. x, y, or xy===both, by default "xy"
@@ -170,13 +198,13 @@ class Panel:
         ax.grid(axis=dimension, color=color, alpha=0.15, **kwargs)
 
     @staticmethod
-    def set_spines(ax, spines: str = "lb"):
+    def set_spines(ax: matplotlib.axes.Axes, spines: str = "lb"):
         """
         Show or hide axis spines
 
         Parameters
         ----------
-        ax : matplotlib.axes._axes.Axes
+        ax : matplotlib.axes.Axes
             Axis to draw on.
         spines : str, optional
             Location of visible spines,
@@ -193,8 +221,8 @@ class Panel:
 
     @staticmethod
     def set_range(
-        ax,
-        extent=None,
+        ax: matplotlib.axes.Axes,
+        extent: list | tuple = None,
         x_range: tuple = (None, None, None),
         y_range: tuple = (None, None, None),
     ):
@@ -203,14 +231,14 @@ class Panel:
 
         Parameters
         ----------
-        ax :
+        ax : matplotlib.axes.Axes
             Axis to change.
-        extent : list or tuple, optional
+        extent : list | tuple, optional
             Bounding box [x0,x1,y0,y1], by default None
         x_range : tuple, optional
-            tuple (x0,x1), by default (None,None)
+            tuple of either (x_min, x_max) or (x_min, x_max, x_steps), by default (None, None, None)
         y_range : tuple, optional
-            tuple (y0,y1), by default (None,None)
+            tuple of either (y_min, y_max) or (y_min, y_max, y_steps), by default (None, None, None)
         """
         if extent:
             ax.set_xlim(extent[0], extent[1])
@@ -225,13 +253,18 @@ class Panel:
                 ax.set_yticks(np.arange(y_range[0], y_range[1], y_range[2]))
 
     @staticmethod
-    def set_time_ticks(ax=None, how: str = None, which: str = "major", fmt: str = None):
+    def set_time_ticks(
+        ax: matplotlib.axes.Axes = None,
+        how: str = None,
+        which: str = "major",
+        fmt: str = None
+    ):
         """
         Format time axis.
 
         Parameters
         ----------
-        ax , optional
+        ax : matplotlib.axes.Axes, optional
             Axis to change, by default None
         how : str, optional
             Label every minutes, hours, days, weeks, months, or years, by default None
@@ -266,11 +299,11 @@ class Panel:
 
     @staticmethod
     def add_colorbar(
-        ax=None,
-        points=None,
+        ax: matplotlib.axes.Axes=None,
+        points = None,
         label: str = None,
-        ticks=None,
-        ticklabels=None,
+        ticks: list | np.ndarray = None,
+        ticklabels: list | np.ndarray = None,
         ticks_kw: dict = dict(),
         bar_kw: dict = dict(shrink=0.6, pad=0.02, aspect=20, extend="both"),
         label_kw: dict = dict(rotation=270, labelpad=20),
@@ -280,15 +313,15 @@ class Panel:
 
         Parameters
         ----------
-        ax  , optional
+        ax : matplotlib.axes.Axes, optional
             Axis to draw on., by default None
         points , optional
             Line2D object to be described, by default None
         label : str, optional
             Axis label of the colorbar, by default None
-        ticks : _type_, optional
+        ticks : list, optional
             Ticks of the colorbar, by default None
-        ticklabels : _type_, optional
+        ticklabels : list, optional
             Tick labels, by default None
         ticks_kw : dict, optional
             Other tick keywords, by default dict()
@@ -308,8 +341,8 @@ class Panel:
     @staticmethod
     def add_circle(
         ax: matplotlib.axes.Axes,
-        x,
-        y,
+        x = 0.0,
+        y = 0.0,
         radius: float = 1.0,
         fc: str = "none",
         color: str = "black",
@@ -318,16 +351,25 @@ class Panel:
         """
         Draws a circle on the plot.
         
-        Args:
-            ax (matplotlib.axes.Axes): Axis object to draw on.
-            x (x axis data type): Center x location of the circle.
-            y (y axis data type): Center y location of the circle.
-            radius (float, optional): Radius of the circle. Defaults to 1.
-            fc (str, optional): Face color of the circle. Defaults to "none".
-            color (str, optional): Border color of the circle. Defaults to "black".
-            ls (str, optional): Line style of the circle. Defaults to "-".
+        Parameters
+        ----------
+        ax: matplotlib.axes.Axes
+            Axis object to draw on.
+        x: x axis data type, optional
+            Center x location of the circle.
+        y: y axis data type, optional
+            Center y location of the circle.
+        radius: float, optional
+            Radius of the circle. Defaults to 1.
+        fc: str, optional
+            Face color of the circle. Defaults to "none".
+        color: str, optional
+            Border color of the circle. Defaults to "black".
+        ls: str, optional
+            Line style of the circle. Defaults to "-".
         
-        Usage:
+        Usage
+        -----
             add_circle(ax, x, y, r, "w", "k", "--")
         """
         circle = plt.Circle((x, y), radius, fc=fc, color=color, ls=ls)
@@ -340,6 +382,10 @@ class Figure(Panel):
     It creates the figure and axes for the panels.
     Cares about saving and showing the figure in the end.
     Provides axes as context.
+
+    Returns
+    -------
+        matplotlib.axes.Axes: Provides the axis as context.
     """
 
     # When initiating Figure, no axis is active yet.
@@ -352,19 +398,46 @@ class Figure(Panel):
 
     def __init__(
         self,
-        # Main
         title: str = "",
-        layout=(1, 1),  # tuple or lists
+        layout: tuple | list = (1, 1),
         size: tuple = (6, 3),
-        save=None,  # str
+        save: str = None,
         save_dpi: int = 250,
         save_format: str = None,
         transparent: bool = True,
         gridspec_kw: dict = dict(
             hspace=0.7, wspace=0.3
+        ),
+        backend: str = "",
         show: bool = True,
         **kwargs
     ):
+        """
+        Initialises the Figure instance.
+
+        Parameters
+        ----------
+        title : str, optional
+            Overarching Figure title, by default ""
+        layout : tuple | list, optional
+            Either a tuple (rows, columns) or a mosaic list of lists, e.g. [[1,2,3],[4,4,3]]. By default (1, 1)
+        size : tuple, optional
+            Defining the width and height of the figure, by default (6, 3)
+        save : str, optional
+            File name of the figure, by default None
+        save_dpi : int, optional
+            Dots per inch of the saved file, by default 250
+        save_format : str, optional
+            _description_, by default None
+        transparent : bool, optional
+            _description_, by default True
+        gridspec_kw : dict, optional
+            Keyword arguments to define the grid layout, could contain wspace, hspace, width_ratios, height_ratios. By default dict( hspace=0.7, wspace=0.3 )
+        backend : str, optional
+            _description_, by default ""
+        show: bool, optional
+            Whether or not to show the plot interactively, defaults to True
+        """
         # Set properties
         self.layout = layout
         self.size = size
@@ -397,9 +470,16 @@ class Figure(Panel):
         if backend:
             # To plot into files, the agg backend must be used
             Figure.set_backend(backend)
-            import matplotlib.pyplot as plt
+            # import matplotlib.pyplot as plt # reload?
 
     def __enter__(self):
+        """
+        When entering the context, generate and return the plot axes.
+
+        Returns
+        -------
+            One or a list of matplotlib.axes.Axes.
+        """
         # Create subplots with the given layout
         if isinstance(self.layout, tuple):
             self.ax = self.create_panel_grid()
@@ -420,6 +500,9 @@ class Figure(Panel):
         return self.ax
 
     def __exit__(self, type, value, traceback):
+        """
+        Exits the context and saves the figure.
+        """
 
         # If it contains only one panel, behave like a Panel
         if Figure.is_panel:
@@ -466,9 +549,25 @@ class Figure(Panel):
 
     @staticmethod
     def set_backend(backend: str):
+        """
+        Sets the current backend, e.g. "agg" to plot into a PDF file.
+
+        Parameters
+        ----------
+        backend : str
+            Matplotlib backend to be used.
+        """
         matplotlib.use(backend)
 
     def create_panel_grid(self):
+        """
+        Creates a regular grid of axes.
+
+        Returns
+        -------
+        List
+            A flattened array of axes.
+        """
         # Regular grids, like (2,4)
         try:
             self.fig, self.axes = plt.subplots(
@@ -500,6 +599,18 @@ class Figure(Panel):
             return None
 
     def create_panel_mosaic(self):
+        """
+        Creates a mosaic layout from self.layout.
+        
+        Examples
+        --------
+            [[1,2,3],[4,4,3]]
+
+        Returns
+        -------
+        List of axes.
+            The axes are sorted.
+        """
         # Make subplots
         try:
             self.fig, self.axes = plt.subplot_mosaic(
@@ -538,12 +649,14 @@ class Figure(Panel):
         """
         return Figure.current_fig
 
+    @staticmethod
+    def get_next_axis() -> matplotlib.axes.Axes:
         """
         Get the next ax instance from the current figure
 
         Returns
         -------
-        ax: matplotlib.axes._axes.Axes
+        ax: matplotlib.axes.Axes
             Matplotlib axis object which can be used for plotting
         """
 
@@ -553,10 +666,11 @@ class Figure(Panel):
         if not Figure.is_panel:
             Figure.current_ax += 1
         # Return incremented active list element
-        return axes_list[Figure.current_ax]
+        ax = axes_list[Figure.current_ax]
+        return ax
 
     @staticmethod
-    def get_axes():
+    def get_axes() -> np.ndarray:
         """
         Get list of axes from the current figure.
 
@@ -567,7 +681,8 @@ class Figure(Panel):
 
         Returns
         -------
-        axes: numpy.array(matplotlib.axes._axes.Axes)
+        axes: numpy.ndarray of matplotlib.axes.Axes
+            A list of axes objects
         """
 
         # List of axes in active figure
@@ -578,15 +693,36 @@ class Figure(Panel):
 
     @staticmethod
     def as_object(
-        ax=None, format="png", tight=True, facecolor="none", dpi=300, transparent=True
-    ):
+        ax: matplotlib.axes.Axes = None,
+        format: str = "png",
+        tight: bool = True,
+        facecolor: str = "none",
+        dpi: int = 300,
+        transparent: bool = True
+    ) -> io.BytesIO:
         """
-        Saves a given figure ax as a BytesIO object.
-        It can be later used as an input for fpdf2 images.
-        Notes: svg format sometimes has issues with colors, use png instead.
-        """
-        import io
+        Saves a given figure as a BytesIO object. It can be later used as an input for fpdf2 images.
 
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Any axis of the figure to be saved, by default None (i.e., use latest axis)
+        format : str, optional
+            Figure storage format, can by "png", "svg", "pdf", by default "png". Notes: svg format sometimes has issues with colors, use png instead.
+        tight : bool, optional
+            Tight plotting without large padding, by default True
+        facecolor : str, optional
+            Background color of the figure, by default "none"
+        dpi : int, optional
+            Dots per inch of the figure, by default 300
+        transparent : bool, optional
+            Transparent background image, by default True
+
+        Returns
+        -------
+        io.BytesIO
+            An object that could be later used in PDFs, for instance.
+        """
         obj = io.BytesIO()
         if ax is None:
             fig = Figure.get()
