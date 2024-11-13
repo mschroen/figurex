@@ -85,17 +85,19 @@ with Figure(size=(3,3)):
 pip install figurex
 ```
 
+If you want to use geospatial mapping features with [Basemap](https://pypi.org/project/basemap/) or [Cartopy](https://pypi.org/project/Cartopy/), install the corresponding optional features:
+```bash
+pip install figurex[basemap]
+pip install figurex[cartopy]
+```
+
 ### Requirements
 
-- Minimal requirements (basic plotting):
-  - python >3.9
-  - numpy
-  - matplotlib
-  - neatlogger (wrapper for loguru, logging)
-- If you want to make geographic maps with figurex.cartopy:
-  - cartopy
-- If you want to make geographic maps with figurex.basemap:
-  - basemap >1.4
+- python >3.9
+- numpy
+- matplotlib
+- cartopy >=0.23 (optional)
+- basemap >=1.4.1 (optional)
 
 ## Related
 

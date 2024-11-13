@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "figurex"
-version = "0.2.3"
+version = "0.2.4"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = ["Martin Schrön <martin@schroen.eu>"]
 license = "MIT"
@@ -18,9 +18,16 @@ numpy = "<2.0"
 matplotlib = ">3.0"
 neatlogger = ">=0.1"
 
+basemap = { version = "^1.4.1", optional = true }
+cartopy = { version = "^0.23", optional = true }
+
 [tool.poetry.dev-dependencies]
 pytest = ">3.0"
 pandas = ">2.0"
+
+[tool.poetry.extras]
+basemap = ["basemap"]
+cartopy = ["cartopy"]
 
 [build-system]
 requires = ["poetry-core"]
