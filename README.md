@@ -66,7 +66,7 @@ my_figure = Figure.as_object()
 
 Plotting maps:
 ```python
-from figurex import Basemap
+from figurex.basemap import Basemap
 
 with Figure(size=(3,3)):
     with Basemap("Germany", extent=(5,15,46,55), tiles="relief") as Map:
@@ -96,8 +96,9 @@ pip install figurex[cartopy]
 - python >3.9
 - numpy
 - matplotlib
-- cartopy >=0.23 (optional)
 - basemap >=1.4.1 (optional)
+- cartopy >=0.23 (optional)
+- scipy (optional, required by cartopy)
 
 ## Related
 
