@@ -24,6 +24,16 @@ class Panel:
     Returns
     -------
         matplotlib.axes.Axes: Provides the axis as context.
+    
+    Usage
+    -----
+    ```
+    with Figure(layout=(1,2)):
+        with Panel() as ax:
+            ax.plot([1,2], [3,4])
+        with Panel() as ax:
+            ax.plot([5,6], [7,8])
+    ```
     """
 
     # Keyword arguments or Panels
@@ -167,6 +177,12 @@ class Panel:
             text for the title, by default ""
         fontsize : int, optional
             font size, by default 10
+        
+        Usage
+        -----
+        ```
+        set_title(ax, "a) Correlation")
+        ```
         """
         ax.set_title(text, loc="left", fontsize=str(fontsize))
 
@@ -179,7 +195,7 @@ class Panel:
         **kwargs
     ):
         """
-        Set grid
+        Set a grid for the axis.
 
         Parameters
         ----------
@@ -191,6 +207,12 @@ class Panel:
             Color of the grid lines, by default "k"
         alpha : float, optional
             Opacity of the lines, by default 1
+        
+        Usage
+        -----
+        ```
+        set_grid(ax, "xy")
+        ```
         """
         if dimension == "xy":
             dimension = "both"
@@ -210,6 +232,12 @@ class Panel:
             Location of visible spines,
             a combination of letters "lrtb"
             (left right, top, bottom), by default "lb"
+        
+        Usage
+        -----
+        ```
+        set_spines(ax, "lb")
+        ```
         """
         spines_label = dict(l="left", r="right", t="top", b="bottom")
 
@@ -239,6 +267,12 @@ class Panel:
             tuple of either (x_min, x_max) or (x_min, x_max, x_steps), by default (None, None, None)
         y_range : tuple, optional
             tuple of either (y_min, y_max) or (y_min, y_max, y_steps), by default (None, None, None)
+        
+        Usage
+        -----
+        ```
+        set_range(ax, x_range=(0, 1, 0.1), y_range=(10, 20, 1))
+        ```
         """
         if extent:
             ax.set_xlim(extent[0], extent[1])
@@ -272,6 +306,12 @@ class Panel:
             Label major or minor ticks, by default "major"
         fmt : str, optional
             Format the date, e.g. "%b %d, %H_%M", by default None
+
+        Usage
+        -----
+        ```
+        set_time_ticks(ax, "weeks", "major", "%d\n%b)
+        ```
         """
         if how:
             if how == "minutes":
@@ -329,6 +369,13 @@ class Panel:
             Bar keywords, by default dict(shrink=0.6, pad=0.02, aspect=20, extend="both")
         label_kw : dict, optional
             Label keywords, by default dict(rotation=270, labelpad=20)
+
+        Usage
+        -----
+        ```
+        points = ax.scatter([1,2], [3,4], c=[0.2,0.8], cmap="Spectral")
+        add_colorbar(points, ax, label="Energy (eV)")
+        ```
         """
         cb = plt.colorbar(points, ax=ax, **bar_kw)
         if not ticks is None:
@@ -375,7 +422,8 @@ class Panel:
         Usage
         -----
         ```
-        add_circle(ax, 1.5, 2.5, 1.0, "w", "k", "--")
+        with Figure() as ax:
+            add_circle(ax, 1.5, 2.5, 1.0, "w", "k", "--")
         ```
         """
         circle = plt.Circle((x, y), radius, fc=fc, color=color, ls=ls)
@@ -392,6 +440,16 @@ class Figure(Panel):
     Returns
     -------
         matplotlib.axes.Axes: Provides the axis as context.
+
+    Usage
+    -----
+    ```
+    with Figure() as ax:
+        ax.plot([1,2], [3,4])
+        
+    with Figure():
+        with Panel() as ax:
+            ax.plot([5,6], [7,8])
     """
 
     # When initiating Figure, no axis is active yet.
@@ -557,11 +615,22 @@ class Figure(Panel):
     def set_backend(backend: str):
         """
         Sets the current backend, e.g. "agg" to plot into a PDF file.
+        If no interactive output is needed, use together with: Figure(show=False)
 
         Parameters
         ----------
         backend : str
-            Matplotlib backend to be used.
+            Matplotlib backend to be used, e.g.: "agg".
+
+        Usage
+        -----
+        ```
+        Figure.set_backend("agg")
+        with Figure(show=False) as ax:
+            ax.plot([1,2],[3,4])
+        my_figure = Figure.as_object()
+        FPDF.add_image(my_figure)
+        ```
         """
         matplotlib.use(backend)
 
@@ -688,6 +757,14 @@ class Figure(Panel):
         -------
         ax: matplotlib.axes.Axes
             Matplotlib axis object which can be used for plotting
+
+        Usage
+        -----
+        ```
+        ax.plot([1,2],[3,4])
+        ax = Figure.get_next_axis()
+        ax.plot([5,6],[7,8])
+        ```
         """
 
         # List of axes in active figure

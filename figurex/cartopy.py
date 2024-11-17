@@ -12,6 +12,24 @@ class Cartopy(Panel):
     """
     Context manager for figure panels with geographic capabilities.
     Like class Panel, but with more features and dependencies.
+
+    Usage
+    -----
+    ```
+    from figurex.cartopy import Cartopy
+    import cartopy.crs as ccrs
+    crs = ccrs.EuroPP()
+
+    with Figure():
+        with Cartopy(
+            extent=[5,15,46,55],
+            projection=crs,
+            tiles="OSM",
+            zoom=6,
+            features=["rivers", "ocean", "countries"]
+        ) as ax:
+            ax.scatter(10,51, transform=ccrs.PlateCarree())
+    ```
     """
 
     default_features = [

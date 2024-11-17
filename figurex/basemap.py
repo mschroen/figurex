@@ -10,6 +10,22 @@ class Basemap(Panel):
     """
     Context manager for figure panels with geographic capabilities.
     Like class Panel, but with more features and dependencies.
+
+    Usage
+    -----
+    ```
+    from figurex.basemap import Basemap
+    with Figure():
+        with Basemap(
+        extent=(5,15,46,55),
+        x_range=(5,15,3),
+        y_range=(47,56,2),
+        features = ["ocean", "countries", "rivers"],
+        tiles="relief"
+    ) as Map:
+        x,y = Map(12.385, 51.331)
+        Map.scatter(x, y,  marker="x", zorder=20,)
+    ```
     """
 
     default_features = [
