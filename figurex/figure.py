@@ -368,9 +368,15 @@ class Panel:
         ls: str, optional
             Line style of the circle. Defaults to "-".
         
+        Returns
+        -------
+        Adds a circle patch to ax
+
         Usage
         -----
-            add_circle(ax, x, y, r, "w", "k", "--")
+        ```
+        add_circle(ax, 1.5, 2.5, 1.0, "w", "k", "--")
+        ```
         """
         circle = plt.Circle((x, y), radius, fc=fc, color=color, ls=ls)
         ax.add_patch(circle)
@@ -567,6 +573,16 @@ class Figure(Panel):
         -------
         List
             A flattened array of axes.
+
+        Usage
+        -----
+        ```
+        with Figure(layout=(1,2)):
+            with Panel() as ax:
+                ax.plot([1,2],[3,4])
+            with Panel() as ax:
+                ax.plot([5,6],[7,8])
+        ``` 
         """
         # Regular grids, like (2,4)
         try:
@@ -602,14 +618,22 @@ class Figure(Panel):
         """
         Creates a mosaic layout from self.layout.
         
-        Examples
-        --------
-            [[1,2,3],[4,4,3]]
-
         Returns
         -------
         List of axes.
             The axes are sorted.
+
+        Usage
+        -----
+        ```
+        with Figure(layout=[[1,2,2],[1,3,3]]):
+            with Panel() as ax:
+                ax.plot([1,2],[3,4])
+            with Panel() as ax:
+                ax.plot([5,6],[7,8])
+            with Panel() as ax:
+                ax.plot([9,0],[1,2])
+        ``` 
         """
         # Make subplots
         try:
@@ -646,6 +670,12 @@ class Figure(Panel):
         -------
         matplotlib.figure.Figure
             The current figure instance.
+
+        Usage
+        -----
+        ```
+        fig = Figure.get()
+        ```
         """
         return Figure.current_fig
 
@@ -674,15 +704,17 @@ class Figure(Panel):
         """
         Get list of axes from the current figure.
 
-        Usage
-        -----
-        for ax in Figure.get_axes():
-            ax.set_ylim(0,1)
-
         Returns
         -------
         axes: numpy.ndarray of matplotlib.axes.Axes
             A list of axes objects
+
+        Usage
+        -----
+        ```
+        for ax in Figure.get_axes():
+            ax.set_ylim(0,1)
+        ```
         """
 
         # List of axes in active figure
@@ -722,6 +754,16 @@ class Figure(Panel):
         -------
         io.BytesIO
             An object that could be later used in PDFs, for instance.
+
+        Usage
+        -----
+        ```
+        with Figure() as ax:
+            ax.plot([1,2], [3,4])
+        my_figure = Figure.as_object()
+        with open("file.txt", "wb") as f:
+            f.write(my_figure.getvalue())
+        ```
         """
         obj = io.BytesIO()
         if ax is None:
