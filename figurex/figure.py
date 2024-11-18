@@ -23,17 +23,16 @@ class Panel:
 
     Returns
     -------
-        matplotlib.axes.Axes: Provides the axis as context.
+    matplotlib.axes.Axes
+        Provides the axis as context.
     
-    Usage
-    -----
-    ```
-    with Figure(layout=(1,2)):
-        with Panel() as ax:
-            ax.plot([1,2], [3,4])
-        with Panel() as ax:
-            ax.plot([5,6], [7,8])
-    ```
+    Examples
+    --------
+    >>> with Figure(layout=(1,2)):
+    ...    with Panel() as ax:
+    ...        ax.plot([1,2], [3,4])
+    ...    with Panel() as ax:
+    ...        ax.plot([5,6], [7,8])
     """
 
     # Keyword arguments or Panels
@@ -134,7 +133,8 @@ class Panel:
 
         Returns
         -------
-            matplotlib.axes.Axes: Axis object for the current panel.
+        matplotlib.axes.Axes
+            Axis object for the current panel.
         """
         # Determine the next available axis and provide it.
         self.ax = Figure.get_next_axis()
@@ -178,11 +178,9 @@ class Panel:
         fontsize : int, optional
             font size, by default 10
         
-        Usage
-        -----
-        ```
-        set_title(ax, "a) Correlation")
-        ```
+        Examples
+        --------
+        >>> set_title(ax, "a) Correlation")
         """
         ax.set_title(text, loc="left", fontsize=str(fontsize))
 
@@ -208,11 +206,10 @@ class Panel:
         alpha : float, optional
             Opacity of the lines, by default 1
         
-        Usage
-        -----
-        ```
-        set_grid(ax, "xy")
-        ```
+        Examples
+        --------
+        >>> set_grid(ax, "xy")
+
         """
         if dimension == "xy":
             dimension = "both"
@@ -233,11 +230,10 @@ class Panel:
             a combination of letters "lrtb"
             (left right, top, bottom), by default "lb"
         
-        Usage
-        -----
-        ```
-        set_spines(ax, "lb")
-        ```
+        Examples
+        --------
+        >>> set_spines(ax, "lb")
+
         """
         spines_label = dict(l="left", r="right", t="top", b="bottom")
 
@@ -268,11 +264,10 @@ class Panel:
         y_range : tuple, optional
             tuple of either (y_min, y_max) or (y_min, y_max, y_steps), by default (None, None, None)
         
-        Usage
-        -----
-        ```
-        set_range(ax, x_range=(0, 1, 0.1), y_range=(10, 20, 1))
-        ```
+        Examples
+        --------
+        >>> set_range(ax, x_range=(0, 1, 0.1), y_range=(10, 20, 1))
+
         """
         if extent:
             ax.set_xlim(extent[0], extent[1])
@@ -307,11 +302,10 @@ class Panel:
         fmt : str, optional
             Format the date, e.g. "%b %d, %H_%M", by default None
 
-        Usage
-        -----
-        ```
-        set_time_ticks(ax, "weeks", "major", "%d\n%b)
-        ```
+        Examples
+        --------
+        >>> set_time_ticks(ax, "weeks", "major", "%d\n%b)
+        
         """
         if how:
             if how == "minutes":
@@ -370,12 +364,11 @@ class Panel:
         label_kw : dict, optional
             Label keywords, by default dict(rotation=270, labelpad=20)
 
-        Usage
-        -----
-        ```
-        points = ax.scatter([1,2], [3,4], c=[0.2,0.8], cmap="Spectral")
-        add_colorbar(points, ax, label="Energy (eV)")
-        ```
+        Examples
+        --------
+        >>> points = ax.scatter([1,2], [3,4], c=[0.2,0.8], cmap="Spectral")
+        ... add_colorbar(points, ax, label="Energy (eV)")
+
         """
         cb = plt.colorbar(points, ax=ax, **bar_kw)
         if not ticks is None:
@@ -417,14 +410,13 @@ class Panel:
         
         Returns
         -------
-        Adds a circle patch to ax
+        ax
+            Adds a circle patch to ax
 
-        Usage
-        -----
-        ```
-        with Figure() as ax:
-            add_circle(ax, 1.5, 2.5, 1.0, "w", "k", "--")
-        ```
+        Examples
+        --------
+        >>> with Figure() as ax:
+        ...    add_circle(ax, 1.5, 2.5, 1.0, "w", "k", "--")
         """
         circle = plt.Circle((x, y), radius, fc=fc, color=color, ls=ls)
         ax.add_patch(circle)
@@ -439,17 +431,20 @@ class Figure(Panel):
 
     Returns
     -------
-        matplotlib.axes.Axes: Provides the axis as context.
+    matplotlib.axes.Axes
+        Provides the axis as context.
 
-    Usage
-    -----
-    ```
-    with Figure() as ax:
-        ax.plot([1,2], [3,4])
-        
-    with Figure():
-        with Panel() as ax:
-            ax.plot([5,6], [7,8])
+    Examples
+    --------
+    >>> with Figure() as ax:
+    ...     ax.plot([1,2], [3,4])
+
+    This is equivalent to:
+
+    >>> with Figure():
+    ...    with Panel() as ax:
+    ...        ax.plot([5,6], [7,8])
+    
     """
 
     # When initiating Figure, no axis is active yet.
@@ -542,7 +537,8 @@ class Figure(Panel):
 
         Returns
         -------
-            One or a list of matplotlib.axes.Axes.
+        matplotlib.axes.Axes
+            One or a list of matplotlib.axes.Axes
         """
         # Create subplots with the given layout
         if isinstance(self.layout, tuple):
@@ -622,15 +618,12 @@ class Figure(Panel):
         backend : str
             Matplotlib backend to be used, e.g.: "agg".
 
-        Usage
-        -----
-        ```
-        Figure.set_backend("agg")
-        with Figure(show=False) as ax:
-            ax.plot([1,2],[3,4])
-        my_figure = Figure.as_object()
-        FPDF.add_image(my_figure)
-        ```
+        Examples
+        --------
+        >>> Figure.set_backend("agg")
+        ... with Figure(show=False) as ax:
+        ...     ax.plot([1,2],[3,4])
+
         """
         matplotlib.use(backend)
 
@@ -643,15 +636,14 @@ class Figure(Panel):
         List
             A flattened array of axes.
 
-        Usage
-        -----
-        ```
-        with Figure(layout=(1,2)):
-            with Panel() as ax:
-                ax.plot([1,2],[3,4])
-            with Panel() as ax:
-                ax.plot([5,6],[7,8])
-        ``` 
+        Examples
+        --------
+        >>> with Figure(layout=(1,2)):
+        ...     with Panel() as ax:
+        ...         ax.plot([1,2],[3,4])
+        ...     with Panel() as ax:
+        ...         ax.plot([5,6],[7,8])
+
         """
         # Regular grids, like (2,4)
         try:
@@ -692,17 +684,16 @@ class Figure(Panel):
         List of axes.
             The axes are sorted.
 
-        Usage
-        -----
-        ```
-        with Figure(layout=[[1,2,2],[1,3,3]]):
-            with Panel() as ax:
-                ax.plot([1,2],[3,4])
-            with Panel() as ax:
-                ax.plot([5,6],[7,8])
-            with Panel() as ax:
-                ax.plot([9,0],[1,2])
-        ``` 
+        Examples
+        --------
+        >>> with Figure(layout=[[1,2,2],[1,3,3]]):
+        ...     with Panel() as ax:
+        ...         ax.plot([1,2],[3,4])
+        ...     with Panel() as ax:
+        ...         ax.plot([5,6],[7,8])
+        ...     with Panel() as ax:
+        ...         ax.plot([9,0],[1,2])
+
         """
         # Make subplots
         try:
@@ -740,11 +731,10 @@ class Figure(Panel):
         matplotlib.figure.Figure
             The current figure instance.
 
-        Usage
-        -----
-        ```
-        fig = Figure.get()
-        ```
+        Examples
+        --------
+        >>> fig = Figure.get()
+
         """
         return Figure.current_fig
 
@@ -755,16 +745,15 @@ class Figure(Panel):
 
         Returns
         -------
-        ax: matplotlib.axes.Axes
+        matplotlib.axes.Axes
             Matplotlib axis object which can be used for plotting
 
-        Usage
-        -----
-        ```
-        ax.plot([1,2],[3,4])
-        ax = Figure.get_next_axis()
-        ax.plot([5,6],[7,8])
-        ```
+        Examples
+        --------
+        >>> ax.plot([1,2],[3,4])
+        ... ax = Figure.get_next_axis()
+        ... ax.plot([5,6],[7,8])
+
         """
 
         # List of axes in active figure
@@ -783,15 +772,14 @@ class Figure(Panel):
 
         Returns
         -------
-        axes: numpy.ndarray of matplotlib.axes.Axes
+        numpy.ndarray of matplotlib.axes.Axes
             A list of axes objects
 
-        Usage
-        -----
-        ```
-        for ax in Figure.get_axes():
-            ax.set_ylim(0,1)
-        ```
+        Examples
+        --------
+        >>> for ax in Figure.get_axes():
+        ...    ax.set_ylim(0,1)
+
         """
 
         # List of axes in active figure
@@ -832,15 +820,12 @@ class Figure(Panel):
         io.BytesIO
             An object that could be later used in PDFs, for instance.
 
-        Usage
+        Examples
         -----
-        ```
-        with Figure() as ax:
-            ax.plot([1,2], [3,4])
-        my_figure = Figure.as_object()
-        with open("file.txt", "wb") as f:
-            f.write(my_figure.getvalue())
-        ```
+        >>> with Figure() as ax:
+        ...     ax.plot([1,2], [3,4])
+        ... my_figure = Figure.as_object()
+
         """
         obj = io.BytesIO()
         if ax is None:

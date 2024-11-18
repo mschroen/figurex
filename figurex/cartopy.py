@@ -13,23 +13,22 @@ class Cartopy(Panel):
     Context manager for figure panels with geographic capabilities.
     Like class Panel, but with more features and dependencies.
 
-    Usage
-    -----
-    ```
-    from figurex.cartopy import Cartopy
-    import cartopy.crs as ccrs
-    crs = ccrs.EuroPP()
+    Examples
+    --------
+    >>> from figurex.cartopy import Cartopy
+    ... import cartopy.crs as ccrs
+    ... crs = ccrs.EuroPP()
+    ... 
+    ... with Figure():
+    ...     with Cartopy(
+    ...         extent=[5,15,46,55],
+    ...         projection=crs,
+    ...         tiles="OSM",
+    ...         zoom=6,
+    ...         features=["rivers", "ocean", "countries"]
+    ...     ) as ax:
+    ...         ax.scatter(10,51, transform=ccrs.PlateCarree())
 
-    with Figure():
-        with Cartopy(
-            extent=[5,15,46,55],
-            projection=crs,
-            tiles="OSM",
-            zoom=6,
-            features=["rivers", "ocean", "countries"]
-        ) as ax:
-            ax.scatter(10,51, transform=ccrs.PlateCarree())
-    ```
     """
 
     default_features = [
@@ -163,10 +162,12 @@ class Cartopy(Panel):
         """
         Add a basemap to a plot.
 
-        Example:
-            with Figure() as ax:
-                ax.plot(x, y)
-                add_basemap(ax, extent=[9, 11, 49, 51], tiles='OSM', zoom=12)
+        Examples
+        --------
+        >>> with Figure() as ax:
+        ...     ax.plot(x, y)
+        ...     add_basemap(ax, extent=[9, 11, 49, 51], tiles='OSM', zoom=12)
+
         """
         if tiles == "OSM" or tiles == "osm":
             request = cimgt.OSM(cache=cache)
