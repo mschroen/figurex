@@ -1,7 +1,9 @@
 # Figurex
-Make figures with context managers in python: quicker, simpler, more readable. 
-
-
+[![PyPi Version](https://img.shields.io/pypi/v/figurex.svg)](https://pypi.python.org/pypi/figurex/)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/mschroen/figurex/blob/main/LICENSE)
+[![Read the Docs](https://readthedocs.org/projects/figurex/badge/?version=latest)](https://figurex.readthedocs.io/en/latest/?badge=latest)
+[![Issues](https://img.shields.io/github/issues-raw/mschroen/figurex.svg?maxAge=25000)](https://github.com/mschroen/figurex/issues)  
+Make figures with context managers in python: quicker, simpler, more readable.   
 ```python
 with Figure() as ax:
     ax.plot([1,2],[3,4])
