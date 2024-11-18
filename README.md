@@ -81,6 +81,14 @@ with Figure(size=(3,3)):
 ![Figurex examples](https://github.com/mschroen/figurex/blob/main/docs/figurex-examples.png)
 
 
+## Documentation
+
+A documentation and API reference can be found on [ReadTheDocs](https://figurex.readthedocs.io/en/latest):
+- [Figure](https://figurex.readthedocs.io/en/latest/#figurex.figure.Figure) (context manager)
+- [Panel](https://figurex.readthedocs.io/en/latest/#figurex.figure.Panel) (context manager)
+- [Basemap](https://figurex.readthedocs.io/en/latest/#figurex.basemap.Basemap) (context manager)
+- [Cartopy](https://figurex.readthedocs.io/en/latest/#figurex.cartopy.Cartopy) (context manager)
+
 ## Install
 
 ```bash
