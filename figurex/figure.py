@@ -25,7 +25,7 @@ class Panel:
     -------
     matplotlib.axes.Axes
         Provides the axis as context.
-    
+
     Examples
     --------
     >>> with Figure(layout=(1,2)):
@@ -177,7 +177,7 @@ class Panel:
             text for the title, by default ""
         fontsize : int, optional
             font size, by default 10
-        
+
         Examples
         --------
         >>> set_title(ax, "a) Correlation")
@@ -205,7 +205,7 @@ class Panel:
             Color of the grid lines, by default "k"
         alpha : float, optional
             Opacity of the lines, by default 1
-        
+
         Examples
         --------
         >>> set_grid(ax, "xy")
@@ -229,7 +229,7 @@ class Panel:
             Location of visible spines,
             a combination of letters "lrtb"
             (left right, top, bottom), by default "lb"
-        
+
         Examples
         --------
         >>> set_spines(ax, "lb")
@@ -263,7 +263,7 @@ class Panel:
             tuple of either (x_min, x_max) or (x_min, x_max, x_steps), by default (None, None, None)
         y_range : tuple, optional
             tuple of either (y_min, y_max) or (y_min, y_max, y_steps), by default (None, None, None)
-        
+
         Examples
         --------
         >>> set_range(ax, x_range=(0, 1, 0.1), y_range=(10, 20, 1))
@@ -286,7 +286,7 @@ class Panel:
         ax: matplotlib.axes.Axes = None,
         how: str = None,
         which: str = "major",
-        fmt: str = None
+        fmt: str = None,
     ):
         """
         Format time axis.
@@ -304,27 +304,35 @@ class Panel:
 
         Examples
         --------
-        >>> set_time_ticks(ax, "weeks", "major", "%d\n%b)
-        
+        >>> set_time_ticks(ax, "2weeks", "major", "%d\n%b)
+
         """
+        import re
+
+        match = re.match(r"(\d*)(.+)", how)
+        if match:
+            interval = match.group(1) or 1
+            interval = int(interval)
+            timestr = match.group(2)
+
         if how:
-            if how == "minutes":
-                how = MinuteLocator()
-            if how == "hours":
-                how = HourLocator()
-            elif how == "days":
-                how = DayLocator()
-            elif how == "weeks":
-                how = WeekdayLocator()
-            elif how == "months":
-                how = MonthLocator()
-            elif how == "years":
-                how = YearLocator()
+            if timestr == "minutes":
+                locator = MinuteLocator(interval=interval)
+            if timestr == "hours":
+                locator = HourLocator(interval=interval)
+            elif timestr == "days":
+                locator = DayLocator(interval=interval)
+            elif timestr == "weeks":
+                locator = WeekdayLocator(interval=interval)
+            elif timestr == "months":
+                locator = MonthLocator(interval=interval)
+            elif timestr == "years":
+                locator = YearLocator(interval=interval)
 
             if which == "major":
-                ax.xaxis.set_major_locator(how)
+                ax.xaxis.set_major_locator(locator)
             elif which == "minor":
-                ax.xaxis.set_minor_locator(how)
+                ax.xaxis.set_minor_locator(locator)
         if fmt:
             if which == "major":
                 ax.xaxis.set_major_formatter(DateFormatter(fmt))
@@ -333,8 +341,8 @@ class Panel:
 
     @staticmethod
     def add_colorbar(
-        ax: matplotlib.axes.Axes=None,
-        points = None,
+        ax: matplotlib.axes.Axes = None,
+        points=None,
         label: str = None,
         ticks: list | np.ndarray = None,
         ticklabels: list | np.ndarray = None,
@@ -381,16 +389,16 @@ class Panel:
     @staticmethod
     def add_circle(
         ax: matplotlib.axes.Axes,
-        x = 0.0,
-        y = 0.0,
+        x=0.0,
+        y=0.0,
         radius: float = 1.0,
         fc: str = "none",
         color: str = "black",
-        ls: str = "-"
+        ls: str = "-",
     ):
         """
         Draws a circle on the plot.
-        
+
         Parameters
         ----------
         ax: matplotlib.axes.Axes
@@ -407,7 +415,7 @@ class Panel:
             Border color of the circle. Defaults to "black".
         ls: str, optional
             Line style of the circle. Defaults to "-".
-        
+
         Returns
         -------
         ax
@@ -444,7 +452,7 @@ class Figure(Panel):
     >>> with Figure():
     ...    with Panel() as ax:
     ...        ax.plot([5,6], [7,8])
-    
+
     """
 
     # When initiating Figure, no axis is active yet.
@@ -464,9 +472,7 @@ class Figure(Panel):
         save_dpi: int = 250,
         save_format: str = None,
         transparent: bool = True,
-        gridspec_kw: dict = dict(
-            hspace=0.7, wspace=0.3
-        ),
+        gridspec_kw: dict = dict(hspace=0.7, wspace=0.3),
         backend: str = "",
         show: bool = True,
         **kwargs
@@ -553,10 +559,12 @@ class Figure(Panel):
         # If save to memory, do not provide the axes but the memory handler instead
         # This is the only exception when Figure does not provide axes.
         if self.save == "memory":
-            log.warning("Figure(save='memory') is deprecated, use Figure.as_object() instead.")
+            log.warning(
+                "Figure(save='memory') is deprecated, use Figure.as_object() instead."
+            )
             # self.memory = io.BytesIO()
             # return self.memory
-        
+
         return self.ax
 
     def __exit__(self, type, value, traceback):
@@ -574,7 +582,9 @@ class Figure(Panel):
             pass
 
         elif self.save == "memory":
-            log.warning("Figure(save='memory') is deprecated, use Figure.as_object() instead.")
+            log.warning(
+                "Figure(save='memory') is deprecated, use Figure.as_object() instead."
+            )
             # Save figure to memory, do not display
             # self.fig.savefig(
             #     self.memory,
@@ -678,7 +688,7 @@ class Figure(Panel):
     def create_panel_mosaic(self):
         """
         Creates a mosaic layout from self.layout.
-        
+
         Returns
         -------
         List of axes.
@@ -716,7 +726,9 @@ class Figure(Panel):
         # Convert labeled dict to list
         if self.fig:
             Figure.current_fig = self.fig
-            self.axes = [v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])]
+            self.axes = [
+                v for k, v in sorted(self.axes.items(), key=lambda pair: pair[0])
+            ]
             return self.axes
         else:
             return None
@@ -795,7 +807,7 @@ class Figure(Panel):
         tight: bool = True,
         facecolor: str = "none",
         dpi: int = 300,
-        transparent: bool = True
+        transparent: bool = True,
     ) -> io.BytesIO:
         """
         Saves a given figure as a BytesIO object. It can be later used as an input for fpdf2 images.
