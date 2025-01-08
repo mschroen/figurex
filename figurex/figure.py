@@ -804,7 +804,7 @@ class Figure(Panel):
     @staticmethod
     def as_object(
         ax: matplotlib.axes.Axes = None,
-        format: str = "png",
+        save_format: str = "png",
         tight: bool = True,
         facecolor: str = "none",
         dpi: int = 300,
@@ -817,7 +817,7 @@ class Figure(Panel):
         ----------
         ax : matplotlib.axes.Axes, optional
             Any axis of the figure to be saved, by default None (i.e., use latest axis)
-        format : str, optional
+        save_format : str, optional
             Figure storage format, can by "png", "svg", "pdf", by default "png". Notes: svg format sometimes has issues with colors, use png instead.
         tight : bool, optional
             Tight plotting without large padding, by default True
@@ -848,7 +848,7 @@ class Figure(Panel):
 
         fig.savefig(
             obj,
-            format=format,
+            format=save_format,
             bbox_inches="tight" if tight else None,
             facecolor=facecolor,
             dpi=dpi,
