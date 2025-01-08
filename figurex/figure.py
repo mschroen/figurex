@@ -297,6 +297,7 @@ class Panel:
             Axis to change, by default None
         how : str, optional
             Label every minutes, hours, days, weeks, months, or years, by default None
+            Can have a number at the start to indicate intervals
         which : str, optional
             Label major or minor ticks, by default "major"
         fmt : str, optional
@@ -327,7 +328,7 @@ class Panel:
             elif timestr == "months":
                 locator = MonthLocator(interval=interval)
             elif timestr == "years":
-                locator = YearLocator(interval=interval)
+                locator = YearLocator(base=interval)
 
             if which == "major":
                 ax.xaxis.set_major_locator(locator)
