@@ -834,7 +834,7 @@ class Figure(Panel):
             An object that could be later used in PDFs, for instance.
 
         Examples
-        -----
+        --------
         >>> with Figure() as ax:
         ...     ax.plot([1,2], [3,4])
         ... my_figure = Figure.as_object()
@@ -842,7 +842,7 @@ class Figure(Panel):
         """
         obj = io.BytesIO()
         if ax is None:
-            fig = Figure.get()
+            fig = plt.gcf()  # Figure.get()
         else:
             fig = ax.get_figure()
 
