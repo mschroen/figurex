@@ -14,6 +14,9 @@ from matplotlib.dates import (
     MinuteLocator,
     DateFormatter,
 )
+import warnings
+
+warnings.filterwarnings("ignore", message="Matplotlib")
 
 
 class Panel:
