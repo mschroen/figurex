@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "figurex"
-version = "0.2.12"
+version = "0.2.13"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = ["Martin Schrön <martin@schroen.eu>"]
 license = "MIT"
