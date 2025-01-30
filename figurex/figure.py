@@ -463,6 +463,7 @@ class Figure(Panel):
     # This will be incremented by Panel()
     current_ax = -1
     current_fig = None
+    default_backend = None
 
     # If the Figure contains only one panel
     is_panel = True
@@ -618,8 +619,8 @@ class Figure(Panel):
 
         if self.show:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        #     plt.close()
 
     @staticmethod
     def set_backend(backend: str):
@@ -631,6 +632,7 @@ class Figure(Panel):
         ----------
         backend : str
             Matplotlib backend to be used, e.g.: "agg".
+            Use "default" to switch back to the original backend.
 
         Examples
         --------
@@ -639,6 +641,10 @@ class Figure(Panel):
         ...     ax.plot([1,2],[3,4])
 
         """
+        if Figure.default_backend is None:
+            Figure.default_backend = matplotlib.get_backend()
+        if backend == "default":
+            backend = Figure.default_backend
         matplotlib.use(backend)
 
     def create_panel_grid(self):
