@@ -1,4 +1,4 @@
 figurex
 cartopy
-basemap==1.4.1
+basemap==2.0.0
 neatlogger
