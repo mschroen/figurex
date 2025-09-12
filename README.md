@@ -100,15 +100,16 @@ If you want to use geospatial mapping features with [Basemap](https://pypi.org/p
 pip install figurex[basemap]
 pip install figurex[cartopy]
 ```
+If you work with `uv`, replace `pip install` by `uv add`.
 
 ### Requirements
 
-- python >3.9
-- numpy
-- matplotlib
-- basemap >=1.4.1 (optional)
-- cartopy >=0.23 (optional)
-- scipy (optional, required by cartopy)
+- python >3.10
+- numpy >2.0
+- matplotlib >3.0
+- basemap >=2.0 *(optional)*
+- cartopy >=0.25 *(optional)*
+- scipy *(optional, required by cartopy)*
 
 ## Related
 

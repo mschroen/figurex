@@ -1,35 +1,42 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "figurex"
-version = "0.2.13"
+version = "0.2.14"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
-authors = ["Martin Schrön <martin@schroen.eu>"]
+authors = [{name = "Martin Schrön", email = "martin@schroen.eu"}]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/mschroen/figurex"
-repository = "https://github.com/mschroen/figurex"
+requires-python = ">3.10"
 keywords = ["plot", "matplotlib", "cartopy", "basemap"]
-include = [
-    "LICENSE",
+
+dependencies = [
+    "numpy>=1.20,<3.0",
+    "matplotlib>3.0",
+    "neatlogger>=0.1",
 ]
 
-[tool.poetry.dependencies]
-python = ">3.9"
-numpy = "<2.0"
-matplotlib = ">3.0"
-neatlogger = ">=0.1"
+[project.optional-dependencies]
+basemap = ["basemap>=2.0.0"]
+cartopy = ["cartopy>=0.25.0,<1.0.0", "scipy>=1.15.0,<2.0.0"]
+dev = [
+    "pytest>3.0",
+    "pandas>2.0",
+]
 
-basemap = { version = "^1.4.1", optional = true }
-cartopy = { version = "^0.23", optional = true }
-scipy = { version = "^1.14", optional = true }
+[project.urls]
+Homepage = "https://github.com/mschroen/figurex"
+Repository = "https://github.com/mschroen/figurex"
+Issues = "https://github.com/mschroen/figurex/issues"
 
-[tool.poetry.dev-dependencies]
-pytest = ">3.0"
-pandas = ">2.0"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["figurex*"]
 
-[tool.poetry.extras]
-basemap = ["basemap"]
-cartopy = ["cartopy", "scipy"]
+[tool.setuptools.package-data]
+figurex = ["*.txt", "*.md"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+include-package-data = true
