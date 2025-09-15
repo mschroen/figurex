@@ -9,7 +9,7 @@ description = "Make figures with context managers in python: quicker, simpler, m
 authors = [{name = "Martin Schrön", email = "martin@schroen.eu"}]
 license = "MIT"
 readme = "README.md"
-requires-python = ">3.10"
+requires-python = ">=3.10"
 keywords = ["plot", "matplotlib", "cartopy", "basemap"]
 
 dependencies = [
@@ -23,7 +23,7 @@ basemap = ["basemap>=2.0.0"]
 cartopy = ["cartopy>=0.25.0,<1.0.0", "scipy>=1.15.0,<2.0.0"]
 dev = [
     "pytest>3.0",
-    "pandas>2.0",
+    "pandas>=2.0",
 ]
 
 [project.urls]
