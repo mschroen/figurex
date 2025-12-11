@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "figurex"
-version = "0.2.14"
+version = "0.2.15"
 description = "Make figures with context managers in python: quicker, simpler, more readable."
 authors = [{name = "Martin Schrön", email = "martin@schroen.eu"}]
 license = "MIT"

@@ -104,7 +104,7 @@ class Basemap(Panel):
             if self.bbox is None:
                 self.center = (10, 50)
             else:
-                self.center = (self.bbox[0] - self.bbox[1], self.bbox[3] - self.bbox[2])
+                self.center = ((self.bbox[0] + self.bbox[1])/2, (self.bbox[3] + self.bbox[2])/2)
 
         # self.subplot_kw["projection"] = self.projection
 
